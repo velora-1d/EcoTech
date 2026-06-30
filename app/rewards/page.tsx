@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { redemptions, rewards, users, trashGuides } from "@/db/schema";
 import { getSession } from "@/lib/session";
 import { seedRewards, redeemReward } from "@/app/actions";
+import Link from "next/link";
 
 async function getPageData(userId?: string) {
   if (!db) return { rewardList: [], userPoints: 0, redeemedIds: new Set<string>(), guidesList: [] };
@@ -47,7 +48,14 @@ export default async function RewardsPage({ searchParams }: Props) {
           <h1 className="font-display text-3xl font-black text-leaf-950">Katalog Hadiah</h1>
           <p className="mt-1 text-sm text-slate-600">Tukarkan poin dengan hadiah pilihanmu.</p>
         </div>
-        {isRealUser && (
+        {!isRealUser ? (
+          <Link
+            href="/login"
+            className="rounded-2xl bg-leaf-700 hover:bg-leaf-955 px-5 py-3 text-center text-white text-xs font-black transition active:scale-95 shadow-md shadow-leaf-700/10"
+          >
+            Daftar / Masuk Akun
+          </Link>
+        ) : (
           <div className="rounded-2xl bg-leaf-950 px-5 py-3 text-center text-white">
             <div className="text-2xl font-black">{userPoints}</div>
             <div className="text-xs text-leaf-100">poin kamu</div>
@@ -81,8 +89,10 @@ export default async function RewardsPage({ searchParams }: Props) {
                       {reward.cost} poin
                     </span>
 
-                    {!session ? (
-                      <span className="text-xs text-slate-400">Login untuk tukar</span>
+                    {!isRealUser ? (
+                      <span className="rounded-xl bg-slate-100 px-3 py-1.5 text-[10px] font-semibold text-slate-500">
+                        Masuk untuk Menukar
+                      </span>
                     ) : alreadyRedeemed ? (
                       <span className="rounded-xl bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-500">
                         Sudah ditukar

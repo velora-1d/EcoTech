@@ -257,7 +257,7 @@ export default function DisposalClient({ guides }: { guides: GuideData[] }) {
               <div className="mt-2 flex items-center gap-3">
                 <button
                   onClick={() => setItemCount(Math.max(1, itemCount - 1))}
-                  className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-lg font-black text-slate-600 hover:bg-slate-50 active:scale-90"
+                  className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200 bg-white text-lg font-black text-slate-600 hover:bg-slate-50 active:scale-90"
                 >
                   −
                 </button>
@@ -266,11 +266,11 @@ export default function DisposalClient({ guides }: { guides: GuideData[] }) {
                   min="1"
                   value={itemCount}
                   onChange={(e) => setItemCount(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="h-11 w-20 rounded-xl border border-slate-200 bg-white text-center font-bold text-slate-800 focus:border-leaf-500 focus:outline-none"
+                  className="h-12 w-20 rounded-xl border border-slate-200 bg-white text-center font-bold text-slate-800 focus:border-leaf-500 focus:outline-none"
                 />
                 <button
                   onClick={() => setItemCount(itemCount + 1)}
-                  className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-lg font-black text-slate-600 hover:bg-slate-50 active:scale-90"
+                  className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200 bg-white text-lg font-black text-slate-600 hover:bg-slate-50 active:scale-90"
                 >
                   +
                 </button>

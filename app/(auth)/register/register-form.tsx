@@ -156,108 +156,110 @@ export default function RegisterForm({ error }: { error?: string }) {
         </div>
 
         {/* ==================== WILAYAH INDONESIA DROPDOWN ==================== */}
-        <div className="border-t border-slate-100 pt-4 space-y-4">
-          <h3 className="text-xs font-bold text-leaf-950 uppercase tracking-wider">Informasi Wilayah Domisili</h3>
+        <div className="border-t border-slate-100 pt-4">
+          <h3 className="text-xs font-bold text-leaf-955 uppercase tracking-wider mb-4">Informasi Wilayah Domisili</h3>
 
-          {/* 1. Pilih Provinsi */}
-          <div>
-            <label className="block text-xs font-bold text-slate-500" htmlFor="province">
-              Provinsi
-            </label>
-            <select
-              id="province"
-              name="province"
-              required
-              onChange={handleProvinceChange}
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-leaf-500 focus:outline-none"
-            >
-              <option value="">Pilih Provinsi</option>
-              {provinces.map((p) => (
-                <option key={p.id} data-id={p.id} value={p.name}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* 1. Pilih Provinsi */}
+            <div>
+              <label className="block text-xs font-bold text-slate-500" htmlFor="province">
+                Provinsi
+              </label>
+              <select
+                id="province"
+                name="province"
+                required
+                onChange={handleProvinceChange}
+                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-leaf-500 focus:outline-none"
+              >
+                <option value="">Pilih Provinsi</option>
+                {provinces.map((p) => (
+                  <option key={p.id} data-id={p.id} value={p.name}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          {/* 2. Pilih Kabupaten/Kota */}
-          <div>
-            <label className="block text-xs font-bold text-slate-500" htmlFor="regency">
-              Kabupaten / Kota {loadingReg && <span className="text-[10px] text-leaf-700 animate-pulse font-normal">(Memuat...)</span>}
-            </label>
-            <select
-              id="regency"
-              name="regency"
-              required
-              disabled={regencies.length === 0}
-              onChange={handleRegencyChange}
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-leaf-500 focus:outline-none disabled:bg-slate-50 disabled:cursor-not-allowed"
-            >
-              <option value="">Pilih Kabupaten / Kota</option>
-              {regencies.map((r) => (
-                <option key={r.id} data-id={r.id} value={r.name}>
-                  {r.name}
-                </option>
-              ))}
-            </select>
-          </div>
+            {/* 2. Pilih Kabupaten/Kota */}
+            <div>
+              <label className="block text-xs font-bold text-slate-500" htmlFor="regency">
+                Kabupaten / Kota {loadingReg && <span className="text-[10px] text-leaf-700 animate-pulse font-normal">(Memuat...)</span>}
+              </label>
+              <select
+                id="regency"
+                name="regency"
+                required
+                disabled={regencies.length === 0}
+                onChange={handleRegencyChange}
+                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-leaf-500 focus:outline-none disabled:bg-slate-50 disabled:cursor-not-allowed"
+              >
+                <option value="">Pilih Kabupaten / Kota</option>
+                {regencies.map((r) => (
+                  <option key={r.id} data-id={r.id} value={r.name}>
+                    {r.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          {/* 3. Pilih Kecamatan */}
-          <div>
-            <label className="block text-xs font-bold text-slate-500" htmlFor="district">
-              Kecamatan {loadingDist && <span className="text-[10px] text-leaf-700 animate-pulse font-normal">(Memuat...)</span>}
-            </label>
-            <select
-              id="district"
-              name="district"
-              required
-              disabled={districts.length === 0}
-              onChange={handleDistrictChange}
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-leaf-500 focus:outline-none disabled:bg-slate-50 disabled:cursor-not-allowed"
-            >
-              <option value="">Pilih Kecamatan</option>
-              {districts.map((d) => (
-                <option key={d.id} data-id={d.id} value={d.name}>
-                  {d.name}
-                </option>
-              ))}
-            </select>
-          </div>
+            {/* 3. Pilih Kecamatan */}
+            <div>
+              <label className="block text-xs font-bold text-slate-500" htmlFor="district">
+                Kecamatan {loadingDist && <span className="text-[10px] text-leaf-700 animate-pulse font-normal">(Memuat...)</span>}
+              </label>
+              <select
+                id="district"
+                name="district"
+                required
+                disabled={districts.length === 0}
+                onChange={handleDistrictChange}
+                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-leaf-500 focus:outline-none disabled:bg-slate-50 disabled:cursor-not-allowed"
+              >
+                <option value="">Pilih Kecamatan</option>
+                {districts.map((d) => (
+                  <option key={d.id} data-id={d.id} value={d.name}>
+                    {d.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          {/* 4. Pilih Desa/Kelurahan */}
-          <div>
-            <label className="block text-xs font-bold text-slate-500" htmlFor="village">
-              Desa / Kelurahan {loadingVill && <span className="text-[10px] text-leaf-700 animate-pulse font-normal">(Memuat...)</span>}
-            </label>
-            <select
-              id="village"
-              name="village"
-              required
-              disabled={villages.length === 0}
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-leaf-500 focus:outline-none disabled:bg-slate-50 disabled:cursor-not-allowed"
-            >
-              <option value="">Pilih Desa / Kelurahan</option>
-              {villages.map((v) => (
-                <option key={v.id} data-id={v.id} value={v.name}>
-                  {v.name}
-                </option>
-              ))}
-            </select>
-          </div>
+            {/* 4. Pilih Desa/Kelurahan */}
+            <div>
+              <label className="block text-xs font-bold text-slate-500" htmlFor="village">
+                Desa / Kelurahan {loadingVill && <span className="text-[10px] text-leaf-700 animate-pulse font-normal">(Memuat...)</span>}
+              </label>
+              <select
+                id="village"
+                name="village"
+                required
+                disabled={villages.length === 0}
+                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm focus:border-leaf-500 focus:outline-none disabled:bg-slate-50 disabled:cursor-not-allowed"
+              >
+                <option value="">Pilih Desa / Kelurahan</option>
+                {villages.map((v) => (
+                  <option key={v.id} data-id={v.id} value={v.name}>
+                    {v.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          {/* 5. Input Kampung/Dusun/RT-RW */}
-          <div>
-            <label className="block text-xs font-bold text-slate-500" htmlFor="hamlet">
-              Nama Kampung / Dusun / RT-RW
-            </label>
-            <input
-              id="hamlet"
-              name="hamlet"
-              type="text"
-              required
-              placeholder="Contoh: Kampung Durian Runtuh RT 02/RW 01"
-              className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-leaf-500 focus:outline-none focus:ring-2 focus:ring-leaf-500/20"
-            />
+            {/* 5. Input Kampung/Dusun/RT-RW */}
+            <div className="sm:col-span-2">
+              <label className="block text-xs font-bold text-slate-500" htmlFor="hamlet">
+                Nama Kampung / Dusun / RT-RW
+              </label>
+              <input
+                id="hamlet"
+                name="hamlet"
+                type="text"
+                required
+                placeholder="Contoh: Kampung Durian Runtuh RT 02/RW 01"
+                className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-leaf-500 focus:outline-none focus:ring-2 focus:ring-leaf-500/20"
+              />
+            </div>
           </div>
         </div>
 
