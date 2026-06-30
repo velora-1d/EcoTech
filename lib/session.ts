@@ -8,6 +8,7 @@ export type SessionData = {
   email: string;
   name: string;
   role: "user" | "admin";
+  isSimulated?: boolean;
 };
 
 function sign(payload: SessionData): string {

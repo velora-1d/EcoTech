@@ -4,11 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { LeafIcon } from "@/components/icons";
 
+import { backToAdmin } from "@/app/actions";
+
 type SessionData = {
   userId: string;
   email: string;
   name: string;
   role: string;
+  isSimulated?: boolean;
 } | null;
 
 type NavbarProps = {
@@ -67,6 +70,16 @@ export default function Navbar({ session, onLogout }: NavbarProps) {
 
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center gap-2">
+          {session?.isSimulated && (
+            <button
+              onClick={async () => {
+                await backToAdmin();
+              }}
+              className="rounded-xl bg-amber-600 hover:bg-amber-700 px-4 py-2 text-sm font-bold text-white transition active:scale-95 shadow-md shadow-amber-600/10"
+            >
+              Kembali ke Admin
+            </button>
+          )}
           {session ? (
             <button
               onClick={() => onLogout()}
@@ -144,6 +157,17 @@ export default function Navbar({ session, onLogout }: NavbarProps) {
               )}
 
               <div className="border-t border-slate-100 pt-4 mt-2 flex flex-col gap-2">
+                {session?.isSimulated && (
+                  <button
+                    onClick={async () => {
+                      setIsOpen(false);
+                      await backToAdmin();
+                    }}
+                    className="w-full rounded-2xl bg-amber-600 hover:bg-amber-700 py-3.5 text-center text-sm font-bold text-white transition active:scale-95 shadow-md shadow-amber-600/10 mb-1"
+                  >
+                    Kembali ke Admin
+                  </button>
+                )}
                 {session ? (
                   <>
                     <div className="px-4 text-xs text-slate-400 font-semibold mb-1">

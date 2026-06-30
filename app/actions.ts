@@ -211,7 +211,8 @@ export async function loginAsDemoUser() {
       userId: demoUser.id,
       email: demoUser.email,
       name: demoUser.name,
-      role: "user"
+      role: "user",
+      isSimulated: true
     });
   } else {
     // Fallback jika DB belum tersambung
@@ -219,11 +220,30 @@ export async function loginAsDemoUser() {
       userId: "demo-tester-id",
       email: demoEmail,
       name: "Tester Admin (Mock)",
-      role: "user"
+      role: "user",
+      isSimulated: true
     });
   }
 
   redirect("/");
+}
+
+export async function backToAdmin() {
+  const session = await getSession();
+  if (!session || !session.isSimulated) {
+    redirect("/login?error=Akses+ditolak.+Sesi+simulasi+tidak+ditemukan.");
+  }
+
+  await destroySession();
+  
+  await createSession({
+    userId: "env-admin",
+    email: process.env.ADMIN_EMAIL || "admin@ecotech.id",
+    name: "Admin",
+    role: "admin"
+  });
+
+  redirect("/admin");
 }
 
 export async function analyzeTrashImage(base64Image: string) {
@@ -253,19 +273,16 @@ export async function analyzeTrashImage(base64Image: string) {
       return { ok: false, error: "Tidak ada kategori sampah aktif yang terdaftar di database." };
     }
 
-    const promptText = `Analisis gambar sampah berikut dan klasifikasikan ke dalam salah satu kategori kunci aktif.
-Kategori aktif yang tersedia di database saat ini adalah: ${availableCategories.join(", ")}.
+    const promptText = `Periksa gambar yang dilampirkan. Kategori aktif yang terdaftar di database saat ini adalah: ${availableCategories.join(", ")}.
 
-Kembalikan hasil analisis hanya dalam format JSON objek dengan properti persis seperti berikut:
+Kembalikan hasil dalam format JSON terstruktur persis seperti berikut:
 {
-  "categoryKey": "salah satu dari kategori aktif yang paling cocok",
-  "detectedObjectName": "Nama objek spesifik yang dikenali (misal: Botol Sprite Hijau, Koran Bekas, Kaleng Fanta)",
+  "categoryKey": "salah satu dari kategori aktif di atas, atau kosongi jika isValidTrash adalah false",
+  "detectedObjectName": "Nama objek spesifik yang dikenali (misal: Botol Plastik Mineral, Kardus Cokelat Bekas)",
   "confidence": 0.95,
   "isValidTrash": true,
-  "reason": "Alasan singkat mengapa objek ini masuk kategori tersebut"
-}
-
-Jika gambar yang diberikan sama sekali bukan sampah, bukan salah satu kategori sampah yang terdaftar, atau gambar tidak jelas/gelap/kosong, set "isValidTrash" menjadi false dan jelaskan di kolom "reason". Jangan berikan penjelasan teks lain di luar format JSON.`;
+  "reason": "Alasan pengelompokan kategori sampah, atau alasan penolakan jika isValidTrash bernilai false (dalam Bahasa Indonesia)"
+}`;
 
     const response = await fetch(`${apiBase}/chat/completions`, {
       method: "POST",
@@ -278,7 +295,19 @@ Jika gambar yang diberikan sama sekali bukan sampah, bukan salah satu kategori s
         messages: [
           {
             role: "system",
-            content: "Anda adalah agen klasifikasi sampah AI terpercaya untuk platform Eco Tech. Selalu kembalikan respon dalam format JSON objek terstruktur."
+            content: `Anda adalah Agen Validator & Sensor Klasifikasi Sampah AI yang sangat ketat untuk platform Eco Tech. 
+Tugas utama Anda adalah memverifikasi apakah objek utama pada gambar benar-benar merupakan SAMPAH YANG LAYAK DISETOR DAN DIDAUR ULANG (seperti botol kosong, kertas bekas, sisa makanan organik, dsb).
+
+ATURAN STRIP FILTER:
+1. Jika gambar yang dikirimkan didominasi oleh:
+   - Wajah manusia, bagian tubuh manusia, selfie.
+   - Hewan (kucing, anjing, burung, dsb).
+   - Barang elektronik utuh yang bukan sampah (misal: keyboard komputer aktif, laptop utuh, HP aktif, TV aktif).
+   - Perabotan utuh/layak pakai (meja utuh, kursi utuh).
+   - Pemandangan alam kosong, ruangan kosong, dinding kosong.
+   Maka Anda WAJIB mengklasifikasikannya sebagai BUKAN SAMPAH. Tetapkan "isValidTrash" menjadi false, kosongkan "categoryKey" menjadi "", dan tulis alasan penolakan dalam Bahasa Indonesia pada kolom "reason" secara sopan (e.g. "Objek terdeteksi berupa wajah manusia / benda utuh non-sampah").
+2. Hanya klasifikasikan sebagai sampah jika objek tersebut terbukti sampah, barang bekas siap buang, atau sisa makanan.
+3. Anda harus selalu mengembalikan respons dalam format JSON objek terstruktur.`
           },
           {
             role: "user",
