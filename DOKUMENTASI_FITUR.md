@@ -1,213 +1,201 @@
-# Dokumentasi Fitur & Alur Kerja (Flow) Sistem Eco Tech
+# Panduan Fitur & Alur Kerja Sistem Eco Tech
 
-Dokumen ini menyajikan panduan lengkap mengenai seluruh fitur, menu, antarmuka (UI/UX), serta alur kerja (*flow*) sistem Eco Tech, baik dari sudut pandang Pengguna (*User Portal*) maupun Pengelola (*Administrator Dashboard*).
+Dokumen ini menyajikan penjelasan lengkap mengenai seluruh fitur, menu halaman, tampilan visual, serta alur penggunaan sistem Eco Tech bagi masyarakat umum (Pengguna) maupun pengelola internal (Administrator) menggunakan bahasa operasional sehari-hari yang mudah dipahami.
 
 ---
 
 ## 📂 DAFTAR ISI
-1. [Pendahuluan & Konsep Utama](#1-pendahuluan--konsep-utama)
-2. [Portal Pengguna (User Portal)](#2-portal-pengguna-user-portal)
-   - [A. Beranda (Home Dashboard)](#a-beranda-home-dashboard)
-   - [B. Kamera AI (Vision AI Scanner)](#b-kamera-ai-vision-ai-scanner)
-   - [C. Katalog Hadiah (Rewards Catalog)](#c-katalog-hadiah-rewards-catalog)
-   - [D. Papan Peringkat (Leaderboard - Eco Hero & Eco Region)](#d-papan-peringkat-leaderboard---eco-hero--eco-region)
-   - [E. Pengaduan Lingkungan (Complaints)](#e-pengaduan-lingkungan-complaints)
-   - [F. Profil Saya (User Profile)](#f-profil-saya-user-profile)
-3. [Portal Administrator (Admin Dashboard)](#3-portal-administrator-admin-dashboard)
-   - [A. Portal Masuk Khusus (Admin Secure Login)](#a-portal-masuk-khusus-admin-secure-login)
-   - [B. Sidebar Navigasi & Simulator Sesi](#b-sidebar-navigasi--simulator-sesi)
-   - [C. Tab 1: Ringkasan & Analitik (Overview)](#c-tab-1-ringkasan--analitik-overview)
-   - [D. Tab 2: Verifikasi Setoran (Disposals Verification)](#d-tab-2-verifikasi-setoran-disposals-verification)
-   - [E. Tab 3: Pengaduan Lingkungan (Complaints Management)](#e-tab-3-pengaduan-lingkungan-complaints-management)
-   - [F. Tab 4: Klaim Voucher Hadiah (Voucher Redemption Verification)](#f-tab-4-klaim-voucher-hadiah-voucher-redemption-verification)
-   - [G. Tab 5: Laporan Eksekutif & Ekspor Laporan](#g-tab-5-laporan-eksekutif--ekspor-laporan)
-   - [H. Tab 6: Kelola Hadiah (Rewards CRUD)](#h-tab-6-kelola-hadiah-rewards-crud)
-   - [I. Tab 7: Kelola Panduan & Poin (Guides CRUD)](#i-tab-7-kelola-panduan--poin-guides-crud)
-   - [J. Tab 8: Papan Peringkat Admin (Leaderboard Audit)](#j-tab-8-papan-peringkat-admin-leaderboard-audit)
-   - [K. Tab 9: Kelola Pengguna (Users Control & Anti-Cheat)](#k-tab-9-kelola-pengguna-users-control--anti-cheat)
+1. [Prinsip Utama Layanan](#1-prinsip-utama-layanan)
+2. [Panduan Menu Pengguna (Aplikasi Warga)](#2-panduan-menu-pengguna-aplikasi-warga)
+   - [A. Halaman Utama (Beranda)](#a-halaman-utama-beranda)
+   - [B. Kamera Pemindai AI (Pendeteksi Sampah Cerdas)](#b-kamera-pemindai-ai-pendeteksi-sampah-cerdas)
+   - [C. Katalog Penukaran Hadiah](#c-katalog-penukaran-hadiah)
+   - [D. Papan Peringkat Eco Hero & Kewilayahan](#d-papan-peringkat-eco-hero--kewilayahan)
+   - [E. Formulir Laporan Pengaduan Lingkungan](#e-formulir-laporan-pengaduan-lingkungan)
+   - [F. Halaman Profil Saya](#f-halaman-profil-saya)
+3. [Panduan Portal Pengelola (Dashboard Admin)](#3-panduan-portal-pengelola-dashboard-admin)
+   - [A. Portal Masuk Khusus Pengelola](#a-portal-masuk-khusus-pengelola)
+   - [B. Menu Navigasi Samping & Mode Simulasi Pengujian](#b-menu-navigasi-samping--mode-simulasi-pengujian)
+   - [C. Menu Ringkasan & Analitik Kerja](#c-menu-ringkasan--analitik-kerja)
+   - [D. Menu Verifikasi Setoran Sampah Warga](#d-menu-verifikasi-setoran-sampah-warga)
+   - [E. Menu Tindak Lanjut Pengaduan Warga](#e-menu-tindak-lanjut-pengaduan-warga)
+   - [F. Menu Validasi Klaim Kupon Hadiah](#f-menu-validasi-klaim-kupon-hadiah)
+   - [G. Menu Laporan Eksekutif & Unduh Dokumen](#g-menu-laporan-eksekutif--unduh-dokumen)
+   - [H. Menu Kelola Katalog Hadiah](#h-menu-kelola-katalog-hadiah)
+   - [I. Menu Kelola Aturan Poin & Kategori Sampah](#i-menu-kelola-aturan-poin--kategori-sampah)
+   - [J. Menu Audit Papan Peringkat](#j-menu-audit-papan-peringkat)
+   - [K. Menu Kelola Akun & Penalti Pemblokiran](#k-menu-kelola-akun--penalti-pemblokiran)
 
 ---
 
-## 1. PENDAHULUAN & KONSEP UTAMA
+## 1. PRINSIP UTAMA LAYANAN
 
-Eco Tech adalah platform sirkular ekonomi berbasis web yang bertujuan meningkatkan kesadaran masyarakat terhadap pengelolaan sampah secara mandiri. Konsep dasar platform ini adalah **"Daur Ulang Dapat Poin, Poin Dapat Hadiah"**.
-
-### Kunci Sirkulasi Sistem:
-* **Pengumpulan per Item**: Sampah dihitung per unit (item), di mana setiap jenis kategori sampah memiliki bobot nilai poin dasar dan poin per unit yang dinamis dari database.
-* **Vision AI**: Menggunakan kecerdasan buatan untuk mengidentifikasi sampah secara instan dari kamera untuk mencegah kesalahan klasifikasi manual.
-* **Agregasi Regional**: Data alamat saat pendaftaran diolah untuk memetakan keaktifan daur ulang hingga tingkat administrasi terkecil (RT/RW).
+Eco Tech adalah platform digital ramah lingkungan dengan slogan **"Setor Sampah, Kumpulkan Poin, Tukar Hadiah"**. 
+* **Perolehan Poin per Unit**: Setiap sampah yang disetorkan dihitung jumlah unitnya. Nilai poin dihitung berdasarkan jenis kategori sampah (seperti plastik, kertas, organik) secara otomatis oleh sistem.
+* **Validasi Kejujuran AI**: Kamera pemindai menggunakan kecerdasan buatan untuk memastikan objek yang difoto benar-benar sampah layak daur ulang guna menghindari manipulasi poin.
+* **Gotong Royong Daerah**: Data domisili wilayah yang dimasukkan saat pendaftaran digunakan untuk memetakan tingkat kepedulian kebersihan dari skala RT/RW hingga Provinsi.
 
 ---
 
-## 2. PORTAL PENGGUNA (USER PORTAL)
+## 2. PANDUAN MENU PENGGUNA (APLIKASI WARGA)
 
-Portal depan web yang diakses oleh masyarakat umum. Didominasi oleh desain bertema hijau alam, cerah, bersahabat, dan memiliki target ketuk jempol yang responsif di perangkat seluler.
+Bagian ini menjelaskan fitur-fitur yang dapat diakses oleh masyarakat umum. Seluruh tampilan portal ini bernuansa hijau alami segar, bersih, dan tombol yang dirancang pas untuk jari ponsel.
 
-### A. Beranda (Home Dashboard)
-* **Deskripsi Fitur**: Menyajikan statistik global daur ulang bagi tamu, serta ringkasan tren kontribusi mingguan personal bagi pengguna terautentikasi.
-* **Komponen Visual**:
-  * Grafik Batang Tren Pemilahan 7 Hari Terakhir (dilengkapi fitur geser/scroll horizontal di mobile).
-  * Tips ramah lingkungan dinamis (tips acak seputar trik mendaur ulang sampah plastik/kertas).
-  * Panel riwayat setoran singkat.
-* **Alur Kerja (Flow)**:
-  1. Pengguna masuk ke halaman utama `/`.
-  2. Jika berstatus **Tamu (Guest)**: Sistem menyajikan visual gerakan, panduan, tombol daftar, serta akumulasi total sampah terverifikasi dari seluruh pengguna di database.
-  3. Jika berstatus **Pengguna Masuk**: Sistem mengambil data sesi, lalu merender grafik tren kontribusi pribadinya dalam 7 hari terakhir, saldo poin aktifnya saat ini, serta ringkasan 4 setoran terbarunya.
+### A. Halaman Utama (Beranda)
+* **Deskripsi Tampilan**: Halaman penyambung pertama yang menyajikan rangkuman kontribusi kebersihan warga dan tren aktivitas mingguan.
+* **Panduan Visual**:
+  * Grafik tren pemilahan sampah 7 hari terakhir yang dapat digeser secara horizontal di layar HP.
+  * Tips berkala seputar pemilahan sampah ramah lingkungan yang berganti secara otomatis.
+  * Rangkuman 4 riwayat setoran terakhir milik pengguna.
+* **Alur Penggunaan**:
+  1. Warga membuka halaman utama.
+  2. **Jika belum masuk akun**: Tampil statistik total sampah yang berhasil dikumpulkan oleh seluruh warga dan ajakan untuk bergabung.
+  3. **Jika sudah masuk akun**: Tampil nama sapaan warga, jumlah saldo poin aktif saat ini, grafik perkembangan setoran sampah pribadi selama seminggu terakhir, dan riwayat setoran singkat.
 
-### B. Kamera AI (Vision AI Scanner)
-* **Deskripsi Fitur**: Pemindai foto sampah real-time berbasis Vision AI menggunakan kamera ponsel/laptop.
-* **Komponen Visual**:
-  * Viewport kamera adaptif (rasio potret 3:4 di mobile untuk kenyamanan satu genggaman, 16:9 di desktop).
-  * Tombol kuantitas jumbo (target ketuk minimal 48px untuk jempol di perangkat seluler).
-  * Banner status "Sampah Tidak Layak Setor" yang tegas jika hasil scan ditolak.
-* **Alur Kerja (Flow)**:
-  1. Pengguna mengakses `/disposal` (wajib login, jika Tamu otomatis dialihkan ke `/login`).
-  2. Klik **Aktifkan Kamera** -> Izinkan akses browser pada kamera perangkat.
-  3. Arahkan kamera ke objek sampah, lalu klik **Pindai Cerdas**.
-  4. Sistem mengirimkan frame gambar Base64 ke server action `analyzeTrashImage()`.
-  5. **Master Prompt AI System** menyaring gambar secara ketat:
-     * *Valid*: Sampah botol kosong, kardus lecek, kaleng soda penyok, dedaunan kering, dsb.
-     * *Ditolak (isValidTrash = false)*: Wajah manusia/selfie, hewan, barang elektronik utuh (laptop/HP/keyboard), perabotan rumah tangga utuh, atau ruangan kosong bersih.
-  6. Jika **Ditolak**: Tampil banner merah berisi alasan penolakan dari AI (misal: *"Gambar ditolak karena mendeteksi wajah manusia"*). Pengguna wajib mengklik *"Scan Sampah Lain"*.
-  7. Jika **Diterima**: Tampil detail nama objek, tingkat akurasi (confidence), dan kategori tangkapan. Pengguna mengatur jumlah item yang disetor menggunakan tombol kuantitas (`+` / `-`), lalu mengklik **Ajukan Setoran**.
-  8. Setoran masuk ke database dengan status `pending` (menunggu persetujuan admin).
+### B. Kamera Pemindai AI (Pendeteksi Sampah Cerdas)
+* **Deskripsi Tampilan**: Fitur utama untuk memindai sampah menggunakan kamera HP atau laptop secara langsung.
+* **Panduan Visual**:
+  * Layar kamera adaptif (berbentuk potret tegak di HP agar mudah digenggam satu tangan).
+  * Tombol penambah/pengurang kuantitas berukuran jumbo agar tidak meleset saat ditekan.
+  * Banner merah "Sampah Tidak Layak Setor" yang muncul jika objek foto ditolak oleh AI.
+* **Alur Penggunaan**:
+  1. Warga membuka menu **Kamera AI** (jika belum masuk akun, akan diarahkan untuk login terlebih dahulu).
+  2. Tekan tombol **Aktifkan Kamera** dan berikan izin akses kamera pada HP Anda.
+  3. Arahkan kamera pada objek sampah yang ingin disetor, lalu tekan tombol **Pindai Cerdas**.
+  4. **Penyaringan Sistem AI Anti-Curang**:
+     * *Diterima*: Botol plastik kosong, kardus bekas lipatan, kaleng bekas penyok, sisa makanan organik, kertas kering, dsb.
+     * *Ditolak*: Wajah/selfie orang, hewan peliharaan, barang elektronik utuh yang bukan sampah (laptop, HP aktif, keyboard), furnitur utuh (meja/kursi), atau ruangan kosong bersih.
+  5. Jika **Ditolak**: Muncul alasan penolakan dari sistem (misal: *"Foto ditolak karena berupa wajah manusia"*). Warga wajib menekan tombol *"Scan Sampah Lain"* untuk mengulang.
+  6. Jika **Diterima**: Tampil nama benda yang dikenali dan tingkat kecocokannya. Masukkan jumlah unit sampah yang disetorkan menggunakan tombol tambah/kurang (`+` / `-`), lalu tekan **Ajukan Setoran**.
+  7. Setoran terdaftar dengan status **Menunggu Persetujuan** dari pihak pengelola.
 
-### C. Katalog Hadiah (Rewards Catalog)
-* **Deskripsi Fitur**: Tempat menukarkan akumulasi poin dengan voucher belanja, barang daur ulang, atau bibit pohon.
-* **Komponen Visual**:
-  * Grid kartu hadiah premium dengan foto representatif, provider, dan harga poin.
-  * Filter kategori hadiah (Voucher, Barang, Bibit Pohon) yang responsif.
-  * Bagi Tamu: Box saldo poin digantikan tombol masuk/daftar. Bagi User: Box saldo poin aktif dinamis.
-* **Alur Kerja (Flow)**:
-  1. Pengguna masuk ke `/rewards`.
-  2. Pilih kategori hadiah yang diinginkan.
-  3. Jika saldo poin cukup: Tombol **Tukarkan Hadiah** aktif. Jika tidak cukup: Tombol dinonaktifkan dengan label *"Poin Tidak Cukup"*.
-  4. Klik **Tukarkan Hadiah** -> Sistem memvalidasi saldo di database, mengurangi poin pengguna, membuat baris data di tabel `redemptions`, serta menghasilkan kode kupon unik format `ECO-XXXXXX`.
-  5. Pengguna diarahkan ke halaman Profil untuk melihat kode voucher tersebut.
+### C. Katalog Penukaran Hadiah
+* **Deskripsi Tampilan**: Daftar hadiah menarik yang bisa ditukarkan dengan poin kebersihan yang telah terkumpul.
+* **Panduan Visual**:
+  * Kotak-kotak pilihan hadiah yang dikelompokkan berdasarkan kategori (Voucher Belanja, Barang Daur Ulang, dan Bibit Pohon).
+  * Saldo poin aktif pengguna yang tertera di bagian atas katalog.
+* **Alur Penggunaan**:
+  1. Warga membuka menu **Hadiah**.
+  2. Pilih kategori hadiah yang diinginkan (misalnya: *Bibit Pohon* atau *Voucher E-Wallet*).
+  3. Jika poin cukup, tombol **Tukarkan Hadiah** akan aktif. Jika kurang, tombol akan otomatis terkunci dengan keterangan *"Poin Tidak Cukup"*.
+  4. Tekan **Tukarkan Hadiah** -> Sistem memotong saldo poin warga dan mengeluarkan kode kupon rahasia berformat `ECO-XXXXXX`.
+  5. Warga diarahkan ke halaman profil untuk melihat kode kupon tersebut.
 
-### D. Papan Peringkat (Leaderboard - Eco Hero & Eco Region)
-* **Deskripsi Fitur**: Kompetisi publik untuk melihat kontributor daur ulang sampah teraktif.
-* **Komponen Visual**:
-  * Tab switcher: **Individu (Eco Hero)** dan **Kewilayahan (Eco Region)**.
-  * Podium visual bertingkat (Juara 1, 2, dan 3) bermahkota lencana Visual Nomor Tanpa Emoji.
-  * Pil filter tingkat wilayah (Provinsi, Kabupaten, Kecamatan, Desa, RT/RW/Kampung).
-* **Alur Kerja (Flow)**:
-  1. Pengguna masuk ke `/leaderboard`.
-  2. **Tab Individu**: Sistem menampilkan 10 besar pengguna dengan saldo poin terbanyak. Nama disamarkan sebagian (contoh: `Ma***n`) untuk menjaga kerahasiaan data pribadi.
-  3. **Tab Kewilayahan**:
-     * Pengguna memilih tingkat wilayah (misal: *Kecamatan*).
-     * Sistem memanggil `getRegionalLeaderboard` untuk mengagregasi poin setoran yang disetujui (`status = 'approved'`) dari seluruh user di wilayah tersebut.
-     * Render podium juara kecamatan teraktif dan tabel 10 besar di bawahnya.
+### D. Papan Peringkat Eco Hero & Kewilayahan
+* **Deskripsi Tampilan**: Menu kompetisi sehat untuk melihat siapa dan daerah mana yang paling rajin mengumpulkan sampah.
+* **Panduan Visual**:
+  * Pilihan tab **Individu (Eco Hero)** dan **Kewilayahan (Eco Region)**.
+  * Podium visual juara 1, 2, dan 3 bergradasi warna emas, perak, dan perunggu yang rapi.
+  * Tombol pilihan daerah (Provinsi, Kabupaten/Kota, Kecamatan, Desa/Kelurahan, Dusun/RT/RW).
+* **Alur Penggunaan**:
+  1. Warga membuka menu **Papan Peringkat**.
+  2. **Pilihan Peringkat Individu**: Menampilkan 10 warga teraktif. Nama warga disamarkan sebagian (seperti `Ma***n` dari `Mahin`) demi menjaga privasi.
+  3. **Pilihan Peringkat Kewilayahan**:
+     * Warga memilih tingkatan wilayah (misalnya: *Kecamatan*).
+     * Tampil podium 3 besar kecamatan teraktif dengan akumulasi setoran sampah terbanyak, serta tabel peringkat 4 hingga 10 di bawahnya secara real-time.
 
-### E. Pengaduan Lingkungan (Complaints)
-* **Deskripsi Fitur**: Media pelaporan pencemaran sungai, udara, atau sampah liar di sekitar pemukiman warga.
-* **Komponen Visual**:
-  * Formulir input Judul, Deskripsi, Lokasi spesifik, dan Unggahan foto bukti.
-  * Riwayat status laporan berbentuk kartu linimasa berkode warna formal tanpa emoji (`Pending` (Abu-abu), `Ditinjau` (Kuning), `Selesai` (Hijau), `Ditolak` (Merah)).
-* **Alur Kerja (Flow)**:
-  1. Pengguna mengakses `/pengaduan` (wajib login).
-  2. Isi seluruh kolom formulir laporan secara lengkap, lalu unggah foto bukti.
-  3. Klik **Kirim Laporan** -> Data disimpan di database dan foto diunggah ke S3/R2 storage.
-  4. Laporan masuk antrean dengan status `pending` dan tampil di riwayat laporan bawah pengguna.
+### E. Formulir Laporan Pengaduan Lingkungan
+* **Deskripsi Tampilan**: Fitur bagi warga untuk melaporkan adanya pencemaran lingkungan atau tumpukan sampah liar di fasilitas umum.
+* **Panduan Visual**:
+  * Formulir laporan ringkas dengan kolom judul, deskripsi kronologi, lokasi kejadian, dan tombol unggah foto bukti laporan.
+  * Kartu status pengaduan warga berkode warna formal: **Pending (Menunggu)**, **Ditinjau**, **Selesai**, dan **Ditolak**.
+* **Alur Penggunaan**:
+  1. Warga membuka menu **Pengaduan**.
+  2. Tulis judul aduan (misal: *"Tumpukan Sampah Liar di Pinggir Sungai"*), deskripsi detail, lokasi spesifik, dan unggah foto kondisi di lapangan.
+  3. Klik **Kirim Laporan** -> Laporan tersimpan di sistem antrean admin. Warga dapat memantau perkembangan status laporan dan tanggapan admin secara real-time pada riwayat aduan di bagian bawah halaman.
 
-### F. Profil Saya (User Profile)
-* **Deskripsi Fitur**: Pusat data diri, statistik kontribusi personal, dan penyimpanan kupon hadiah aktif.
-* **Komponen Visual**:
-  * Kartu identitas pengguna (Nama, Email, dan Tanggal Bergabung) yang diambil secara real-time dari database.
-  * Metrik pencapaian (Total Poin Disetujui, Item Terverifikasi, Voucher Ditukar).
-  * Kupon Voucher Aktif: Menampilkan detail voucher, kode kupon, serta representasi visual barcode garis CSS dinamis berdasarkan data `code`.
-* **Alur Kerja (Flow)**:
-  1. Pengguna masuk ke `/profile`.
-  2. Lihat metrik statistik kontribusi pribadinya sejak terdaftar.
-  3. Salin kode kupon `ECO-XXXXXX` atau tunjukkan barcode di halaman profil kepada staf admin/toko fisik untuk mengklaim hadiah nyata.
+### F. Halaman Profil Saya
+* **Deskripsi Tampilan**: Kartu identitas digital warga yang merangkum hasil kerja kebersihan dan kupon hadiah yang dimiliki.
+* **Panduan Visual**:
+  * Kartu identitas berisi Nama, Email, dan Tanggal Bergabung.
+  * Tiga kotak metrik pencapaian (Total Poin yang Disetujui, Jumlah Item Sampah Terverifikasi, dan Jumlah Voucher yang Ditukar).
+  * Bagian kupon aktif yang menampilkan representasi gambar barcode garis digital.
+* **Alur Penggunaan**:
+  1. Warga membuka menu **Profil** (dengan mengklik foto/nama di navbar).
+  2. Tinjau statistik kontribusi kebersihan yang sudah dilakukan selama bergabung.
+  3. Untuk mengklaim hadiah fisik: Tunjukkan kode kupon `ECO-XXXXXX` atau barcode garis di halaman ini kepada petugas pengelola/toko rekanan.
 
 ---
 
-## 3. PORTAL ADMINISTRATOR (ADMIN DASHBOARD)
+## 3. PANDUAN PORTAL PENGELOLA (DASHBOARD ADMIN)
 
-Portal internal back-office yang diperuntukkan bagi verifikator, staf kebersihan, dan administrator sistem Eco Tech. Memiliki gaya visual gelap cyber, kokoh, dan berorientasi keamanan sistem (*security-first*).
+Bagian khusus back-office untuk petugas kebersihan dan staf verifikator internal Eco Tech. Tampilannya bertema gelap cyber yang kokoh dan berorientasi keamanan sistem (*security-first*).
 
-### A. Portal Masuk Khusus (Admin Secure Login)
-* **URL Akses**: `/admin/login` (URL terpisah dari user biasa).
-* **UI/UX**: Latar belakang abu-abu arang kelam (`bg-slate-955`) dilengkapi ornamen lampu pendaran neon hijau redup, segel tanda keamanan tegas (`PORTAL ADMINISTRATOR - SECURED`), dan **tanpa tombol registrasi** untuk menghindari pendaftaran admin tak dikenal.
-* **Alur Kerja (Flow)**:
-  1. Staf membuka `/admin/login`.
-  2. Masukkan email admin (`admin@ecotech.id`) dan password admin (`admin123`).
-  3. Sistem memverifikasi kredensial lewat server action `adminLogin()`. Jika salah atau bukan role admin, akses diblokir.
-  4. Jika sukses, token sesi terbuat dengan role `admin` dan staf diarahkan ke `/admin`.
+### A. Portal Masuk Khusus Pengelola
+* **Alamat Akses**: `/admin/login` (Halaman khusus terpisah dari warga biasa).
+* **Alur Penggunaan**:
+  1. Petugas membuka alamat `/admin/login`.
+  2. Masukkan email khusus admin (`admin@ecotech.id`) dan password admin (`admin123`).
+  3. Sistem memverifikasi akses. Jika email/sandi salah atau tidak memiliki peran pengelola, akses ditolak secara otomatis.
+  4. Jika sukses, pengelola diarahkan masuk ke Dashboard Admin.
 
-### B. Sidebar Navigasi & Simulator Sesi
-* **Deskripsi Fitur**: Panel kontrol kiri permanen di desktop dan laci tarik (drawer) hamburger di mobile yang dilengkapi tombol silang tutup (`X`) fungsional.
-* **Simulator User**: Tombol **"Lihat Web (Sebagai User)"** di bagian bawah sidebar.
-* **Alur Kerja (Flow)**:
-  1. Admin mengklik **"Lihat Web (Sebagai User)"**.
-  2. Server action `loginAsDemoUser()` menghancurkan sesi admin aktif, membuat sesi pengguna simulasi baru berlabel `Tester Admin` dengan saldo awal 500 poin dan flag `isSimulated: true`.
-  3. Admin dialihkan ke halaman depan user (`/`) untuk bebas melakukan simulasi setoran sampah atau klaim voucher.
-  4. Selama sesi simulasi aktif, tombol emas **"Kembali ke Admin"** akan terus melayang di Navbar atas global.
-  5. Admin mengklik **"Kembali ke Admin"** -> Sistem memicu `backToAdmin()`, me-reset sesi kembali ke Admin, dan mengarahkannya kembali ke `/admin`.
+### B. Menu Navigasi Samping & Mode Simulasi Pengujian
+* **Deskripsi Tampilan**: Bilah navigasi permanen di sebelah kiri pada komputer, atau laci menu yang ditarik dari kiri atas pada layar HP (dilengkapi tombol silang `X` untuk menutup).
+* **Mode Uji Coba (Simulator)**: 
+  1. Pengelola menekan tombol **Lihat Web (Sebagai User)** di bagian bawah menu samping.
+  2. Sistem mengubah akun pengelola sementara menjadi akun warga tester bernama `Tester Admin` dengan saldo awal 500 poin untuk mempermudah simulasi pengujian.
+  3. Pengelola dialihkan ke halaman depan warga dan bebas menguji kamera AI atau menukarkan poin.
+  4. Untuk kembali, cukup klik tombol emas melayang **Kembali ke Admin** di navigasi atas untuk memulihkan akun pengelola asli dan kembali ke `/admin`.
 
-### C. Tab 1: Ringkasan & Analitik (Overview)
-* **Deskripsi Fitur**: Tampilan beranda admin untuk memantau grafik tren pemilahan sampah harian, setoran terbaru masuk, dan pengaduan terbaru masuk.
-* **Alur Kerja (Flow)**: Admin masuk pertama kali ke `/admin` -> Meninjau grafik tren dan antrean pekerjaan terbaru di bagian atas secara cepat.
+### C. Menu Ringkasan & Analitik Kerja
+* **Deskripsi Tampilan**: Dashboard utama admin untuk memantau grafik tren pemilahan sampah harian secara agregat, antrean setoran sampah masuk, dan laporan pengaduan terbaru.
+* **Alur Penggunaan**: Pengelola membuka menu ini untuk melihat volume pekerjaan masuk hari ini secara cepat.
 
-### D. Tab 2: Verifikasi Setoran (Disposals Verification)
-* **Deskripsi Fitur**: Modul untuk menyetujui atau menolak setoran sampah pengguna.
-* **Alur Kerja (Flow)**:
-  1. Admin membuka Tab **Verifikasi Setoran**.
-  2. Cari setoran berstatus `pending` (menunggu verifikasi).
-  3. Jika data setoran sesuai: Klik **Setujui** -> Status berubah menjadi `approved` dan poin secara otomatis ditambahkan ke saldo akun pengguna di database.
-  4. Jika data setoran tidak sesuai (misal: jumlah sampah tidak cocok dengan foto): Klik **Tolak** -> Status berubah menjadi `rejected` dan poin tidak ditambahkan ke akun pengguna.
+### D. Menu Verifikasi Setoran Sampah Warga
+* **Deskripsi Tampilan**: Pusat kendali persetujuan setoran sampah warga dari Halaman Kamera AI.
+* **Alur Penggunaan**:
+  1. Pengelola masuk ke menu **Verifikasi Setoran**.
+  2. Cari pengajuan setoran warga yang berstatus *Menunggu Persetujuan*.
+  3. Bandingkan foto sampah yang dikirim warga dengan data kategori dan jumlah item yang dimasukkan.
+  4. Jika data sesuai: Klik **Setujui** -> Poin secara otomatis dikirim ke saldo akun warga tersebut.
+  5. Jika data tidak sesuai (curang/jumlah dimanipulasi): Klik **Tolak** -> Pengajuan ditolak dan poin tidak dikirim ke akun warga.
 
-### E. Tab 3: Pengaduan Lingkungan (Complaints Management)
-* **Deskripsi Fitur**: Modul peninjauan pengaduan masyarakat atas tumpukan sampah liar atau pencemaran sungai.
-* **Alur Kerja (Flow)**:
-  1. Admin membuka Tab **Pengaduan Lingkungan**.
-  2. Klik baris laporan -> Tinjau foto bukti pengaduan, judul, dan lokasi spesifik.
-  3. Ubah status aduan menjadi `Ditinjau` (*Investigating*) jika staf sedang meluncur ke lokasi.
-  4. Tulis catatan admin pada kolom **Catatan Tindakan Admin** (misal: *"Sampah sudah diangkut armada kebersihan pada pukul 10.00 WIB"*).
-  5. Klik **Selesaikan Laporan** -> Status di sisi user berubah menjadi `resolved` (Selesai).
+### E. Menu Tindak Lanjut Pengaduan Warga
+* **Deskripsi Tampilan**: Pusat penanganan laporan pencemaran lingkungan dari warga.
+* **Alur Penggunaan**:
+  1. Pengelola masuk ke menu **Pengaduan Lingkungan**.
+  2. Tinjau foto laporan kejadian dan lokasi yang dikirim warga.
+  3. Jika laporan sedang diproses/staf kebersihan meluncur ke lokasi: Ubah status menjadi **Ditinjau**.
+  4. Jika sampah liar sudah dibersihkan/kasus selesai: Ketik catatan penyelesaian (misal: *"Armada sampah dinas kebersihan sudah mengangkut tumpukan sampah"*), lalu klik **Selesaikan Laporan**. Status di sisi warga akan berubah menjadi *Selesai*.
 
-### F. Tab 4: Klaim Voucher Hadiah (Voucher Redemption Verification)
-* **Deskripsi Fitur**: Modul validasi penukaran kupon fisik yang dibawa oleh pengguna.
-* **Alur Kerja (Flow)**:
-  1. Pengguna membawa kupon fisik / kode barcode dari `/profile` ke staf admin.
-  2. Admin masuk ke Tab **Klaim Voucher Hadiah**.
-  3. Cari berdasarkan kode kupon `ECO-XXXXXX` pada form filter pencarian.
-  4. Periksa kecocokan data pengguna, jenis voucher, dan provider.
-  5. Jika valid: Klik **Selesaikan Klaim** -> Status voucher di database berubah menjadi `completed` (Selesai), menandakan hadiah nyata telah diberikan kepada pengguna dan voucher tidak bisa dipakai kembali.
+### F. Menu Validasi Klaim Kupon Hadiah
+* **Deskripsi Tampilan**: Alat verifikasi kupon penukaran hadiah warga.
+* **Alur Penggunaan**:
+  1. Warga menyerahkan kode kupon `ECO-XXXXXX` kepada petugas.
+  2. Pengelola mengetikkan kode kupon pada kolom pencarian menu **Klaim Voucher Hadiah**.
+  3. Periksa kecocokan nama warga dan jenis hadiah yang diklaim.
+  4. Jika data kupon terbukti sah dan belum pernah ditukarkan sebelumnya: Berikan hadiah fisik ke warga, lalu klik **Selesaikan Klaim**. Status kupon berubah menjadi *Selesai* dan hangus (tidak bisa diklaim ulang).
 
-### G. Tab 5: Laporan Eksekutif & Ekspor Laporan
-* **Deskripsi Fitur**: Ringkasan data KPI sirkulasi poin terintegrasi dan analisis wilayah teraktif untuk keperluan rapat dan pengarsipan data.
-* **Komponen Visual**:
-  * Grid KPI Utama (Total Poin Beredar, Rata-rata Poin User, Rasio Verifikasi, Rasio Penukaran, Rasio Pengaduan).
-  * Grid KPI Kewilayahan Teraktif (Provinsi Teraktif, Kabupaten/Kota Teraktif, Kecamatan Teraktif).
-  * Rekapitulasi volume sampah terpilah per kategori dan popularitas voucher.
-  * Tombol aksi ekspor: **Ekspor Excel (.XLS)**, **Ekspor Word (.DOC)**, dan **Cetak/Simpan PDF**.
-* **Alur Kerja (Flow)**:
-  1. Admin membuka Tab **Laporan Eksekutif**.
-  2. Tinjau rangkuman statistik performa platform secara real-time.
-  3. Klik salah satu tombol ekspor (misal: **Ekspor Excel**).
-  4. Sistem mengekspor data KPI, visualisasi daerah teraktif, sirkulasi poin, volume sampah, dan top kontributor ke format dokumen pilihan, lalu otomatis mengunduh file tersebut ke komputer lokal admin.
+### G. Menu Laporan Eksekutif & Unduh Dokumen
+* **Deskripsi Tampilan**: Rangkuman data kinerja utama platform dan statistik sirkulasi poin total untuk kebutuhan rapat pengurus kebersihan daerah.
+* **Fitur Utama**:
+  * Kartu KPI utama (Total poin aktif beredar, rata-rata poin warga, persentase setoran sukses, persentase aduan terselesaikan).
+  * **Kartu KPI Kewilayahan**: Menampilkan secara dinamis nama Provinsi Teraktif, Kabupaten/Kota Teraktif, dan Kecamatan Teraktif.
+  * Tombol unduh dokumen: **Ekspor ke Excel (.XLS)**, **Ekspor ke Word (.DOC)**, dan **Cetak / Simpan PDF**.
+* **Alur Penggunaan**:
+  1. Pengelola membuka menu **Laporan Eksekutif**.
+  2. Tinjau grafik volume sampah terkumpul per kategori dan daftar voucher hadiah terpopuler.
+  3. Tekan tombol ekspor (misal: **Ekspor ke Excel**) -> Sistem mengunduh file laporan lengkap yang merangkum metrik kinerja utama, rekapitulasi sampah, popularitas voucher, kontributor warga teraktif, dan data daerah terajin ke komputer pengelola.
 
-### H. Tab 6: Kelola Hadiah (Rewards CRUD)
-* **Deskripsi Fitur**: Pengelolaan katalog hadiah yang tersedia di sisi pengguna.
-* **Alur Kerja (Flow)**:
-  * *Tambah Hadiah*: Isi form Judul, Provider, Deskripsi, Biaya Poin (*Cost*), Stok awal, dan Kategori -> Klik Simpan. Hadiah langsung muncul di halaman `/rewards` pengguna.
-  * *Edit & Hapus*: Mengubah deskripsi, menambah stok gudang, atau menghapus item hadiah yang sudah tidak aktif dari database.
+### H. Menu Kelola Hadiah
+* **Deskripsi Tampilan**: Tempat untuk menambah, mengubah, atau menghapus item hadiah yang ada di katalog warga.
+* **Alur Penggunaan**:
+  * *Tambah Hadiah*: Isi form nama hadiah, nama penyedia (merchant/provider), deskripsi hadiah, harga poin penukaran, jumlah stok awal, dan pilih kategori hadiah -> Klik Simpan. Hadiah akan langsung tampil di katalog warga.
+  * *Ubah/Hapus*: Memperbarui stok gudang hadiah atau menghapus hadiah yang masa berlakunya sudah habis.
 
-### I. Tab 7: Kelola Panduan & Poin (Guides CRUD)
-* **Deskripsi Fitur**: Modul untuk mengatur instruksi pemilahan sampah dan bobot perolehan poin per kategori sampah.
-* **Alur Kerja (Flow)**:
-  * Admin dapat menyunting nilai **Poin Dasar** (poin awal saat melakukan scan) dan **Poin per Item** (poin tambahan per unit sampah) untuk setiap kategori sampah (seperti Plastik, Kertas, dll).
-  * Perubahan nilai poin ini langsung berdampak dinamis pada kalkulasi poin di Kamera AI pengguna dan panduan daur ulang saat itu juga.
+### I. Menu Kelola Aturan Poin & Kategori Sampah
+* **Deskripsi Tampilan**: Tempat untuk mengatur jumlah perolehan poin per kategori sampah.
+* **Alur Penggunaan**:
+  * Pengelola dapat mengubah nilai **Poin Dasar** (poin awal saat melakukan scan foto) dan **Poin per Unit** (poin tambahan per unit sampah) untuk masing-masing kategori sampah (Plastik, Kertas, Logam, Organik).
+  * Perubahan ini langsung berlaku secara otomatis pada sistem deteksi kamera AI warga.
 
-### J. Tab 8: Papan Peringkat Admin (Leaderboard Audit)
-* **Deskripsi Fitur**: Halaman pemantauan 10 besar pengguna dengan saldo poin terbanyak untuk kebutuhan audit berkala.
-* **Alur Kerja (Flow)**: Admin memantau pergerakan nama pengguna riil secara lengkap (tidak disamarkan) untuk mendeteksi apakah ada akun tertentu yang poinnya meningkat secara tidak wajar.
+### J. Menu Audit Papan Peringkat
+* **Deskripsi Tampilan**: Menu untuk melihat 10 besar kontributor warga teraktif secara transparan (tanpa penyamaran bintang) guna kebutuhan audit internal.
+* **Alur Penggunaan**: Pengelola memantau dan mengawasi nama-nama warga di papan peringkat teratas untuk mendeteksi potensi penyalahgunaan sistem secara berkala.
 
-### K. Tab 9: Kelola Pengguna (Users Control & Anti-Cheat)
-* **Deskripsi Fitur**: Modul kontrol akun pengguna dan penanganan kecurangan sistem.
-* **Alur Kerja (Flow)**:
-  * *Pencarian*: Cari pengguna berdasarkan nama atau email.
-  * *Penyesuaian Poin Manual*: Admin dapat mengurangi poin pengguna jika terbukti ada setoran sampah yang tidak valid, atau menambahkan poin reward apresiasi khusus.
-  * *Blokir Akun*: Klik tombol **Blokir Akun** -> Kolom `isBlocked` di database diatur ke `true`. Pengguna yang bersangkutan otomatis ter-force logout dari platform, tidak bisa masuk kembali, dan namanya dieliminasi dari papan peringkat publik secara instan.
+### K. Menu Kelola Akun & Penalti Pemblokiran
+* **Deskripsi Tampilan**: Tempat pencarian data warga, penyesuaian poin manual, dan penegakan sanksi akun curang.
+* **Alur Penggunaan**:
+  * *Pencarian*: Cari akun warga berdasarkan nama atau email.
+  * *Sesuaikan Poin*: Ketikkan jumlah poin untuk ditambah/dikurangi dari saldo warga (misalnya untuk koreksi kesalahan setoran).
+  * *Blokir Akun*: Jika warga terbukti curang (mengunggah foto palsu berulang kali), klik tombol **Blokir Akun**. Sesi masuk warga tersebut akan dibatalkan paksa secara instan, warga tidak dapat login kembali, dan namanya dieliminasi dari papan peringkat publik.
