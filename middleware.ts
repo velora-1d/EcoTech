@@ -12,6 +12,9 @@ export function middleware(request: NextRequest) {
   const isHoldingAdminLogin = pathname === "/admin/login";
 
   if (isProtectedRoute && !isHoldingAdminLogin && !session) {
+    if (pathname.startsWith("/admin")) {
+      return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
     return NextResponse.redirect(new URL("/login", request.url));
   }
 

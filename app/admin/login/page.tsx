@@ -8,32 +8,47 @@ export default async function AdminLoginPage({ searchParams }: Props) {
   const { error } = await searchParams;
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-950 px-4 py-12 relative overflow-hidden">
-      {/* Background Decorative Rings */}
-      <div className="absolute -left-1/4 -top-1/4 h-96 w-96 rounded-full bg-emerald-500/10 blur-3xl" />
-      <div className="absolute -right-1/4 -bottom-1/4 h-96 w-96 rounded-full bg-leaf-500/10 blur-3xl" />
+    <main className="flex min-h-screen items-center justify-center bg-slate-955 px-4 py-12 relative overflow-hidden">
+      {/* Cyber Grid Pattern Background */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-35" />
+      
+      {/* Neon Glow Blobs */}
+      <div className="absolute -left-20 -top-20 h-96 w-96 rounded-full bg-emerald-500/5 blur-3xl border border-emerald-500/10" />
+      <div className="absolute -right-20 -bottom-20 h-96 w-96 rounded-full bg-teal-500/5 blur-3xl border border-teal-500/10" />
 
       <div className="w-full max-w-md z-10">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 rounded-2xl bg-emerald-950/80 border border-emerald-500/20 px-4 py-2.5 text-sm font-bold text-leaf-400 mb-4">
-            <LeafIcon size={20} className="text-leaf-400" />
-            Portal Administrator
+        {/* Portal Back-office Header */}
+        <div className="text-center mb-6">
+          <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-950/50 border border-emerald-500/20 text-emerald-500 mb-3 shadow-md shadow-emerald-500/5">
+            <LeafIcon size={24} />
           </div>
-          <h1 className="font-display text-3xl font-black tracking-tight text-white">Eco Tech Admin</h1>
-          <p className="mt-2 text-sm text-slate-400">Silakan masuk menggunakan kredensial admin Anda.</p>
+          <h1 className="font-display text-2xl font-black tracking-tight text-white uppercase">Eco Tech</h1>
+          <p className="mt-1 text-xs text-slate-400 font-medium">Sistem Informasi Pengelolaan & Verifikasi Sampah Daerah</p>
         </div>
 
-        <div className="rounded-[2.5rem] border border-slate-800 bg-slate-900/90 p-8 shadow-2xl backdrop-blur-md">
+        {/* Admin Login Card */}
+        <div className="rounded-[2rem] border border-slate-800 bg-slate-900/90 p-8 shadow-2xl shadow-black/80 backdrop-blur-md relative overflow-hidden">
+          {/* Cyber Edge Line */}
+          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500" />
+
+          <div className="flex items-center justify-between">
+            <h2 className="font-display text-lg font-black text-white uppercase tracking-wider">Portal Administrator</h2>
+            <span className="rounded-full bg-emerald-950 border border-emerald-500/20 px-2.5 py-0.5 text-[10px] font-bold text-emerald-400 uppercase tracking-widest">
+              Secured
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-slate-450">Akses khusus staf internal verifikator dan admin web Eco Tech.</p>
+
           {error && (
-            <div className="mb-6 rounded-2xl bg-red-950/50 border border-red-500/20 p-4 text-xs font-semibold text-red-400">
+            <div className="mt-4 rounded-xl bg-red-950/40 border border-red-500/30 p-3.5 text-xs font-semibold text-red-400 leading-relaxed">
               {decodeURIComponent(error)}
             </div>
           )}
 
-          <form action={adminLogin} className="space-y-5">
+          <form action={adminLogin} className="mt-6 space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider" htmlFor="email">
-                Email Admin
+              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider" htmlFor="email">
+                Email Administrator
               </label>
               <input
                 id="email"
@@ -41,14 +56,14 @@ export default async function AdminLoginPage({ searchParams }: Props) {
                 type="email"
                 required
                 autoComplete="email"
-                className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3.5 text-sm text-white focus:border-leaf-500 focus:outline-none focus:ring-2 focus:ring-leaf-500/20 transition placeholder-slate-700"
+                className="mt-2 w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-200 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/20 transition placeholder-slate-600"
                 placeholder="admin@ecotech.id"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider" htmlFor="password">
-                Password
+              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider" htmlFor="password">
+                Sandi Keamanan
               </label>
               <input
                 id="password"
@@ -56,26 +71,24 @@ export default async function AdminLoginPage({ searchParams }: Props) {
                 type="password"
                 required
                 autoComplete="current-password"
-                className="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3.5 text-sm text-white focus:border-leaf-500 focus:outline-none focus:ring-2 focus:ring-leaf-500/20 transition placeholder-slate-700"
+                className="mt-2 w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-200 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/20 transition placeholder-slate-700"
                 placeholder="••••••••"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full rounded-2xl bg-leaf-700 hover:bg-leaf-955 py-3.5 text-center font-bold text-white transition active:scale-95 shadow-lg shadow-leaf-700/20 mt-6"
+              className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 py-3.5 text-center font-bold text-white transition active:scale-95 shadow-lg shadow-emerald-600/10 mt-6 text-sm uppercase tracking-wider"
             >
-              Masuk Dashboard
+              Masuk Portal Admin
             </button>
           </form>
         </div>
 
-        <p className="mt-8 text-center text-xs text-slate-500">
-          Bukan administrator?{" "}
-          <Link href="/login" className="font-semibold text-leaf-400 hover:underline">
-            Masuk Portal Pengguna
-          </Link>
-        </p>
+        {/* Footer Security Watermark */}
+        <div className="text-center mt-6 text-[10px] font-black text-slate-650 uppercase tracking-widest select-none">
+          Eco Tech Back-Office Operations Secured
+        </div>
       </div>
     </main>
   );
