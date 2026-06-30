@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { createDisposalDirect, analyzeTrashImage } from "@/app/actions";
 import { TrashIcon, LeafIcon } from "@/components/icons";
+import { MAX_ITEMS_PER_DISPOSAL } from "@/lib/disposal-rules";
 
 export type GuideData = {
   id: string;
@@ -20,6 +21,8 @@ type ScanState =
   | { status: "invalid"; reason: string }
   | { status: "detected"; categoryKey: string; detectedObjectName: string; confidence: number; reason: string }
   | { status: "done"; pointsEarned: number };
+
+const QUICK_ITEM_COUNTS = [1, 2, 3, 5, 10];
 
 export default function DisposalClient({ guides }: { guides: GuideData[] }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -115,6 +118,11 @@ export default function DisposalClient({ guides }: { guides: GuideData[] }) {
 
   async function handleConfirm(categoryKey: string) {
     setSubmitError(null);
+    if (itemCount < 1 || itemCount > MAX_ITEMS_PER_DISPOSAL) {
+      setSubmitError(`Jumlah item maksimal ${MAX_ITEMS_PER_DISPOSAL} per pemindaian.`);
+      return;
+    }
+
     const result = await createDisposalDirect(categoryKey, itemCount);
     if (result?.ok) {
       setScanState({ status: "done", pointsEarned: result.pointsEarned ?? 0 });
@@ -254,22 +262,39 @@ export default function DisposalClient({ guides }: { guides: GuideData[] }) {
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">
                 Jumlah Item Disetor
               </label>
-              <div className="mt-2 flex items-center gap-3">
+              <p className="mt-1 text-xs text-slate-500">
+                Maksimal {MAX_ITEMS_PER_DISPOSAL} item per pemindaian. Admin tetap memverifikasi jumlah fisik sebelum poin masuk.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {QUICK_ITEM_COUNTS.map((count) => (
+                  <button
+                    key={count}
+                    type="button"
+                    onClick={() => setItemCount(count)}
+                    className={`rounded-xl px-4 py-2 text-xs font-black transition active:scale-95 ${
+                      itemCount === count
+                        ? "bg-leaf-700 text-white shadow-md shadow-leaf-700/10"
+                        : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                    }`}
+                  >
+                    {count} item
+                  </button>
+                ))}
+              </div>
+              <div className="mt-3 flex items-center gap-3">
                 <button
                   onClick={() => setItemCount(Math.max(1, itemCount - 1))}
+                  disabled={itemCount <= 1}
                   className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200 bg-white text-lg font-black text-slate-600 hover:bg-slate-50 active:scale-90"
                 >
                   −
                 </button>
-                <input
-                  type="number"
-                  min="1"
-                  value={itemCount}
-                  onChange={(e) => setItemCount(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="h-12 w-20 rounded-xl border border-slate-200 bg-white text-center font-bold text-slate-800 focus:border-leaf-500 focus:outline-none"
-                />
+                <div className="flex h-12 w-24 items-center justify-center rounded-xl border border-slate-200 bg-white text-center text-lg font-black text-slate-800">
+                  {itemCount}
+                </div>
                 <button
-                  onClick={() => setItemCount(itemCount + 1)}
+                  onClick={() => setItemCount(Math.min(MAX_ITEMS_PER_DISPOSAL, itemCount + 1))}
+                  disabled={itemCount >= MAX_ITEMS_PER_DISPOSAL}
                   className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-200 bg-white text-lg font-black text-slate-600 hover:bg-slate-50 active:scale-90"
                 >
                   +
