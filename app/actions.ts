@@ -252,11 +252,16 @@ export async function analyzeTrashImage(base64Image: string) {
     return { ok: false, error: "Anda harus masuk terlebih dahulu." };
   }
 
-  const apiKey = process.env.AI_API_KEY;
-  const apiBase = process.env.AI_API_BASE || "https://api.openai.com/v1";
-  const modelName = process.env.AI_MODEL || "gpt-4o-mini";
+  const apiKeyRaw = process.env.AI_API_KEY || "";
+  const apiKey = apiKeyRaw.replace(/^["']|["']$/g, "").trim();
+  
+  const apiBaseRaw = process.env.AI_API_BASE || "https://api.openai.com/v1";
+  const apiBase = apiBaseRaw.replace(/^["']|["']$/g, "").trim();
+  
+  const modelNameRaw = process.env.AI_MODEL || "gpt-4o-mini";
+  const modelName = modelNameRaw.replace(/^["']|["']$/g, "").trim();
 
-  if (!apiKey || apiKey === "isi_api_key_anda_di_sini") {
+  if (!apiKey || apiKey === "isi_api_key_anda_di_sini" || apiKey === "") {
     return { ok: false, error: "API Key AI belum dikonfigurasi di server." };
   }
 
@@ -273,15 +278,15 @@ export async function analyzeTrashImage(base64Image: string) {
       return { ok: false, error: "Tidak ada kategori sampah aktif yang terdaftar di database." };
     }
 
-    const promptText = `Periksa gambar yang dilampirkan. Kategori aktif yang terdaftar di database saat ini adalah: ${availableCategories.join(", ")}.
+    const promptText = `Periksa gambar terlampir secara teliti. Kategori aktif di database Eco Tech saat ini adalah: ${availableCategories.join(", ")}.
 
 Kembalikan hasil dalam format JSON terstruktur persis seperti berikut:
 {
+  "isValidTrash": boolean, // true jika benar-benar sampah layak setor, false jika wajah, orang, hewan, atau barang utuh non-sampah
   "categoryKey": "salah satu dari kategori aktif di atas, atau kosongi jika isValidTrash adalah false",
-  "detectedObjectName": "Nama objek spesifik yang dikenali (misal: Botol Plastik Mineral, Kardus Cokelat Bekas)",
+  "detectedObjectName": "Nama objek spesifik yang dikenali (misal: Botol Plastik Aqua, Kardus Cokelat Bekas)",
   "confidence": 0.95,
-  "isValidTrash": true,
-  "reason": "Alasan pengelompokan kategori sampah, atau alasan penolakan jika isValidTrash bernilai false (dalam Bahasa Indonesia)"
+  "reason": "Alasan klasifikasi kategori sampah, atau alasan penolakan jika isValidTrash bernilai false (dalam Bahasa Indonesia)"
 }`;
 
     const response = await fetch(`${apiBase}/chat/completions`, {
@@ -295,19 +300,21 @@ Kembalikan hasil dalam format JSON terstruktur persis seperti berikut:
         messages: [
           {
             role: "system",
-            content: `Anda adalah Agen Validator & Sensor Klasifikasi Sampah AI yang sangat ketat untuk platform Eco Tech. 
-Tugas utama Anda adalah memverifikasi apakah objek utama pada gambar benar-benar merupakan SAMPAH YANG LAYAK DISETOR DAN DIDAUR ULANG (seperti botol kosong, kertas bekas, sisa makanan organik, dsb).
+            content: `PERAN & IDENTITAS:
+Anda adalah "Eco Tech Vision Validator", sistem validator sensor kecerdasan buatan (AI) bersertifikat lingkungan hidup. Tugas utama Anda adalah secara jujur dan disiplin memverifikasi apakah objek utama pada foto benar-benar merupakan SAMPAH LAYAK SETOR untuk didaur ulang (seperti botol kosong, kertas bekas, kaleng penyok, dsb) atau BUKAN SAMPAH.
 
-ATURAN STRIP FILTER:
-1. Jika gambar yang dikirimkan didominasi oleh:
-   - Wajah manusia, bagian tubuh manusia, selfie.
-   - Hewan (kucing, anjing, burung, dsb).
-   - Barang elektronik utuh yang bukan sampah (misal: keyboard komputer aktif, laptop utuh, HP aktif, TV aktif).
-   - Perabotan utuh/layak pakai (meja utuh, kursi utuh).
-   - Pemandangan alam kosong, ruangan kosong, dinding kosong.
-   Maka Anda WAJIB mengklasifikasikannya sebagai BUKAN SAMPAH. Tetapkan "isValidTrash" menjadi false, kosongkan "categoryKey" menjadi "", dan tulis alasan penolakan dalam Bahasa Indonesia pada kolom "reason" secara sopan (e.g. "Objek terdeteksi berupa wajah manusia / benda utuh non-sampah").
-2. Hanya klasifikasikan sebagai sampah jika objek tersebut terbukti sampah, barang bekas siap buang, atau sisa makanan.
-3. Anda harus selalu mengembalikan respons dalam format JSON objek terstruktur.`
+ATURAN FILTER ANTI-KECURANGAN (ANTI-CHEAT):
+1. Anda WAJIB menyatakan gambar sebagai BUKAN SAMPAH ("isValidTrash": false, "categoryKey": "") jika foto tersebut didominasi oleh:
+   - Wajah manusia, swafoto (selfie), potret orang, jari tangan, atau bagian tubuh manusia.
+   - Hewan peliharaan atau hewan liar (kucing, anjing, burung, dsb).
+   - Barang elektronik utuh/aktif layak pakai (keyboard komputer aktif, laptop, HP, mouse komputer, dsb).
+   - Furnitur/perabotan utuh layak guna (kursi, meja, lemari, ranjang).
+   - Bidang kosong (dinding kosong, lantai bersih tanpa sampah, langit, pemandangan bersih).
+2. Tulis alasan penolakan secara jelas dan tegas dalam Bahasa Indonesia pada kolom "reason" (contoh: "Gambar ditolak karena terdeteksi berupa wajah manusia / benda utuh layak pakai").
+3. Hanya klasifikasikan sebagai "isValidTrash": true jika terbukti berupa sampah nyata, sisa kemasan habis pakai, kertas robek/lecek, botol kosong bekas minuman, sisa makanan organik, kain bekas compang-camping, dsb.
+
+FORMAT LUARAN:
+Selalu kembalikan respon dalam format JSON objek terstruktur.`
           },
           {
             role: "user",

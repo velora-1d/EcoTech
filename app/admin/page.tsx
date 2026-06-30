@@ -544,7 +544,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
         {/* TAB 2: VERIFIKASI SETORAN (DENGAN FILTER) */}
         {currentTab === "disposals" && (
           <div className="space-y-6 print:hidden">
-            <h1 className="font-display text-3xl font-black text-slate-800">Verifikasi Setoran Sampah ♻️</h1>
+            <h1 className="font-display text-3xl font-black text-slate-800">Verifikasi Setoran Sampah</h1>
             <p className="text-sm text-slate-500 mt-1">Kelola dan filter data pengajuan setoran sampah pengguna.</p>
 
             {/* Form Filter */}
@@ -691,7 +691,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
         {/* TAB 3: PENGADUAN LINGKUNGAN (DENGAN FILTER) */}
         {currentTab === "complaints" && (
           <div className="space-y-6 print:hidden">
-            <h1 className="font-display text-3xl font-black text-slate-800">Kelola Pengaduan Lingkungan 📢</h1>
+            <h1 className="font-display text-3xl font-black text-slate-800">Kelola Pengaduan Lingkungan</h1>
             <p className="text-sm text-slate-500 mt-1">Daftar laporan pencemaran air sungai, tumpukan sampah liar, dan polusi dari masyarakat.</p>
 
             {/* Form Filter */}
@@ -767,14 +767,14 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
                         <td className="px-6 py-4">
                           <div className="font-bold text-slate-800">{c.userName}</div>
                           <div className="text-xs text-slate-400">{c.userEmail}</div>
-                          <div className="text-[10px] text-slate-400 mt-1">
-                            📅 {new Date(c.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                          <div className="text-[10px] text-slate-400 mt-1 font-semibold">
+                            Tanggal: {new Date(c.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                           </div>
                         </td>
                         <td className="px-6 py-4 max-w-xs">
                           <div className="font-bold text-leaf-950">{c.title}</div>
                           <p className="text-xs text-slate-500 mt-1 line-clamp-3">{c.description}</p>
-                          <div className="text-[10px] font-semibold text-slate-400 mt-1.5">📍 {c.location}</div>
+                          <div className="text-[10px] font-bold text-slate-400 mt-1.5 uppercase tracking-wider">Lokasi: {c.location}</div>
                         </td>
                         <td className="px-6 py-4">
                           {c.image ? (
@@ -857,7 +857,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
         {/* TAB 4: KLAIM VOUCHER HADIAH (DENGAN FILTER) */}
         {currentTab === "redemptions" && (
           <div className="space-y-6 print:hidden">
-            <h1 className="font-display text-3xl font-black text-slate-800">Klaim Voucher Hadiah 🎁</h1>
+            <h1 className="font-display text-3xl font-black text-slate-800">Klaim Voucher Hadiah</h1>
             <p className="text-sm text-slate-500 mt-1">Cari dan validasi kupon penukaran pengguna.</p>
 
             {/* Form Filter */}
@@ -1003,21 +1003,24 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
             {/* Grid KPI Cards */}
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
               {[
-                { label: "Poin Beredar (Circulating)", value: `${reportData.kpis.totalPointsCirculating} pts`, sub: "Saldo aktif semua user", icon: "🪙", color: "text-blue-600 bg-blue-50" },
-                { label: "Rata-rata Poin User", value: `${reportData.kpis.averagePointsPerUser} pts`, sub: "Rasio poin per individu", icon: "👤", color: "text-purple-600 bg-purple-50" },
-                { label: "Rasio Verifikasi Sampah", value: `${reportData.kpis.disposalSuccessRate}%`, sub: "Rasio disetujui vs total", icon: "♻️", color: "text-emerald-600 bg-emerald-50" },
-                { label: "Rasio Penukaran Hadiah", value: `${reportData.kpis.redemptionRate}%`, sub: "Persentase poin dibelanjakan", icon: "🎁", color: "text-amber-600 bg-amber-50" },
-                { label: "Penyelesaian Pengaduan", value: `${reportData.kpis.complaintResolvedRate}%`, sub: "Rasio laporan terselesaikan", icon: "📢", color: "text-rose-600 bg-rose-50" }
-              ].map((kpi) => (
-                <div key={kpi.label} className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xl shadow-slate-900/5">
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-2xl text-lg font-bold ${kpi.color}`}>
-                    {kpi.icon}
+                { label: "Poin Beredar (Circulating)", value: `${reportData.kpis.totalPointsCirculating} pts`, sub: "Saldo aktif semua user", icon: LeafIcon, color: "text-blue-600 bg-blue-50" },
+                { label: "Rata-rata Poin User", value: `${reportData.kpis.averagePointsPerUser} pts`, sub: "Rasio poin per individu", icon: UserIcon, color: "text-purple-600 bg-purple-50" },
+                { label: "Rasio Verifikasi Sampah", value: `${reportData.kpis.disposalSuccessRate}%`, sub: "Rasio disetujui vs total", icon: TrashIcon, color: "text-emerald-600 bg-emerald-50" },
+                { label: "Rasio Penukaran Hadiah", value: `${reportData.kpis.redemptionRate}%`, sub: "Persentase poin dibelanjakan", icon: GiftIcon, color: "text-amber-600 bg-amber-50" },
+                { label: "Penyelesaian Pengaduan", value: `${reportData.kpis.complaintResolvedRate}%`, sub: "Rasio laporan terselesaikan", icon: MegaphoneIcon, color: "text-rose-600 bg-rose-50" }
+              ].map((kpi) => {
+                const Icon = kpi.icon;
+                return (
+                  <div key={kpi.label} className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xl shadow-slate-900/5">
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-2xl ${kpi.color}`}>
+                      <Icon size={18} />
+                    </div>
+                    <div className="mt-4 text-2xl font-black text-slate-800">{kpi.value}</div>
+                    <div className="mt-1 text-xs font-bold text-slate-800 uppercase tracking-wider">{kpi.label}</div>
+                    <div className="text-[10px] text-slate-400 mt-0.5 font-semibold">{kpi.sub}</div>
                   </div>
-                  <div className="mt-4 text-2xl font-black text-slate-800">{kpi.value}</div>
-                  <div className="mt-1 text-xs font-bold text-slate-800 uppercase tracking-wider">{kpi.label}</div>
-                  <div className="text-[10px] text-slate-400 mt-0.5 font-semibold">{kpi.sub}</div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Detail Tables */}
@@ -1118,7 +1121,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
         {/* TAB 6: KELOLA REWARDS (DENGAN FILTER) */}
         {currentTab === "rewards" && (
           <div className="space-y-8 print:hidden">
-            <h1 className="font-display text-3xl font-black text-slate-800">Kelola Katalog Rewards ⭐</h1>
+            <h1 className="font-display text-3xl font-black text-slate-800">Kelola Katalog Rewards</h1>
 
             {/* Form Filter */}
             <form action="" method="get" className="flex flex-wrap gap-3 items-end bg-white border border-slate-100 p-5 rounded-3xl shadow-sm">
@@ -1280,7 +1283,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
         {/* TAB 7: KELOLA PANDUAN & ATURAN POIN */}
         {currentTab === "guides" && (
           <div className="space-y-8 print:hidden">
-            <h1 className="font-display text-3xl font-black text-slate-800">Kelola Panduan & Aturan Poin 📝</h1>
+            <h1 className="font-display text-3xl font-black text-slate-800">Kelola Panduan & Aturan Poin</h1>
             <p className="text-sm text-slate-500 mt-1">Konfigurasikan aturan perolehan poin per kategori sampah.</p>
 
             {/* Form Filter */}
@@ -1411,7 +1414,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
         {/* TAB 8: LEADERBOARD ADMIN (DENGAN FILTER) */}
         {currentTab === "leaderboard" && (
           <div className="space-y-6 print:hidden">
-            <h1 className="font-display text-3xl font-black text-slate-800">Papan Peringkat Admin 🏆</h1>
+            <h1 className="font-display text-3xl font-black text-slate-800">Papan Peringkat Admin</h1>
             <p className="text-sm text-slate-500 mt-1">Daftar pengguna teraktif untuk pemantauan dan kontrol penyalahgunaan.</p>
 
             {/* Form Filter */}
@@ -1496,7 +1499,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
         {/* TAB 9: KELOLA PENGGUNA (DENGAN FILTER) */}
         {currentTab === "users" && (
           <div className="space-y-6 print:hidden">
-            <h1 className="font-display text-3xl font-black text-slate-800">Kelola Pengguna 👤</h1>
+            <h1 className="font-display text-3xl font-black text-slate-800">Kelola Pengguna</h1>
             <p className="text-sm text-slate-500 mt-1">Kelola total saldo poin pengguna dan status pemblokiran akun.</p>
 
             {/* Form Filter */}
