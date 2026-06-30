@@ -18,18 +18,9 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set("x-current-path", pathname);
-
-  return NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  });
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|icon.jpg|.*\\.jpg|.*\\.png|.*\\.jpeg).*)",
-  ],
+  matcher: ["/admin/:path*", "/profile/:path*"],
 };

@@ -44,6 +44,12 @@ Aplikasi pengelolaan sampah berbasis poin. Pengguna mencatat disposal berdasarka
 Aplikasi aktif Next.js Fullstack berada langsung di root project. Folder legacy `frontend/`, `backend/`, `ecotech/`, serta folder Python `camera_ai/` telah dihapus sepenuhnya untuk menjaga kerapian struktur proyek monorepo murni Next.js Fullstack.
 
 ## Progress Terakhir
+2026-06-30 (Pembersihan Emoji Laporan & Optimasi Navigasi Lanjutan):
+- Menghapus emoji pada tombol ekspor Laporan Eksekutif admin dan mengganti simbol centang timeline pengaduan menjadi nomor tahap formal.
+- Mengoptimalkan Laporan Eksekutif agar PostgreSQL melakukan agregasi KPI, rekap sampah, reward populer, dan top user tanpa mengambil seluruh tabel ke memory Node.js.
+- Menghapus dependency `headers()` di root layout dan membatasi middleware hanya ke route `/admin/*` dan `/profile/*` agar navigasi menu publik tidak melewati middleware global yang tidak perlu.
+- Build Next.js produksi sukses.
+
 2026-06-30 (Optimasi Load Data, Navigasi, dan Cache Publik):
 - Menambahkan cache data publik berbasis tag untuk statistik guest, katalog reward, dan panduan sampah agar navigasi antar menu tidak selalu mengulang query database yang sama.
 - Menggabungkan query statistik guest Beranda dari dua query agregasi menjadi satu query agregasi.
@@ -67,5 +73,4 @@ Aplikasi aktif Next.js Fullstack berada langsung di root project. Folder legacy 
 
 ## Last Updated
 2026-06-30
-
 

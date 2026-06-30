@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { count, desc, eq, ne, and, sum, gte, lte } from "drizzle-orm";
+import { count, desc, eq, ne, and, sum, gte, lte, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { disposals, rewards, users, redemptions, trashGuides, complaints } from "@/db/schema";
 import { getSession } from "@/lib/session";
@@ -312,74 +312,83 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
     }
     complaintList = list;
   } else if (currentTab === "reports") {
-    // AMBIL DATA AGREGAT UNTUK LAPORAN EKSEKUTIF (KPI LENGKAP)
-    const [allUsers, allDisposals, allRedemptions, allRewards, allComplaints] = await Promise.all([
-      db.select({ id: users.id, points: users.points, role: users.role, name: users.name, email: users.email }).from(users),
-      db.select().from(disposals),
-      db.select().from(redemptions),
-      db.select().from(rewards),
-      db.select().from(complaints)
+    const redemptionsCount = sql<number>`count(${redemptions.id})`;
+    const [[userKpi], [disposalKpi], [redemptionKpi], [complaintKpi], trashSummaryRows, rewardSummary, userSummary] = await Promise.all([
+      db
+        .select({
+          userCount: count(),
+          totalPointsCirculating: sum(users.points)
+        })
+        .from(users)
+        .where(ne(users.role, "admin")),
+      db
+        .select({
+          totalDispCount: count(),
+          approvedDispCount: sql<number>`count(*) filter (where ${disposals.status} = 'approved')`,
+          totalPointsApproved: sql<number>`coalesce(sum(${disposals.pointsEarned}) filter (where ${disposals.status} = 'approved'), 0)`
+        })
+        .from(disposals),
+      db
+        .select({
+          totalPointsSpent: sql<number>`coalesce(sum(${redemptions.pointsSpent}), 0)`
+        })
+        .from(redemptions),
+      db
+        .select({
+          totalCompCount: count(),
+          resolvedCompCount: sql<number>`count(*) filter (where ${complaints.status} = 'resolved')`
+        })
+        .from(complaints),
+      db
+        .select({
+          categoryKey: disposals.categoryKey,
+          count: sql<number>`coalesce(sum(${disposals.itemCount}), 0)`,
+          totalPoints: sql<number>`coalesce(sum(${disposals.pointsEarned}) filter (where ${disposals.status} = 'approved'), 0)`
+        })
+        .from(disposals)
+        .groupBy(disposals.categoryKey),
+      db
+        .select({
+          title: rewards.title,
+          provider: rewards.provider,
+          redemptionCount: redemptionsCount,
+          stock: rewards.stock
+        })
+        .from(rewards)
+        .leftJoin(redemptions, eq(redemptions.rewardId, rewards.id))
+        .groupBy(rewards.id, rewards.title, rewards.provider, rewards.stock)
+        .orderBy(desc(redemptionsCount))
+        .limit(5),
+      db
+        .select({
+          name: users.name,
+          email: users.email,
+          points: users.points
+        })
+        .from(users)
+        .where(ne(users.role, "admin"))
+        .orderBy(desc(users.points))
+        .limit(5)
     ]);
 
-    // 1. Hitung total poin circulating
-    const activeUsers = allUsers.filter(u => u.role !== "admin");
-    const totalPointsCirculating = activeUsers.reduce((s, u) => s + u.points, 0);
-
-    // 2. Rata-rata poin per user
-    const averagePointsPerUser = activeUsers.length > 0 ? Math.round(totalPointsCirculating / activeUsers.length) : 0;
-
-    // 3. Rasio setoran sukses
-    const totalDispCount = allDisposals.length;
-    const approvedDispCount = allDisposals.filter(d => d.status === "approved").length;
+    const activeUserCount = Number(userKpi.userCount ?? 0);
+    const totalPointsCirculating = Number(userKpi.totalPointsCirculating ?? 0);
+    const averagePointsPerUser = activeUserCount > 0 ? Math.round(totalPointsCirculating / activeUserCount) : 0;
+    const totalDispCount = Number(disposalKpi.totalDispCount ?? 0);
+    const approvedDispCount = Number(disposalKpi.approvedDispCount ?? 0);
     const disposalSuccessRate = totalDispCount > 0 ? Math.round((approvedDispCount / totalDispCount) * 100) : 0;
-
-    // 4. Rasio klaim (redemption rate)
-    const totalPointsApproved = allDisposals.filter(d => d.status === "approved").reduce((s, d) => s + d.pointsEarned, 0);
-    const totalPointsSpent = allRedemptions.reduce((s, r) => s + r.pointsSpent, 0);
+    const totalPointsApproved = Number(disposalKpi.totalPointsApproved ?? 0);
+    const totalPointsSpent = Number(redemptionKpi.totalPointsSpent ?? 0);
     const redemptionRate = totalPointsApproved > 0 ? Math.round((totalPointsSpent / totalPointsApproved) * 100) : 0;
-
-    // 5. Rasio pengaduan diselesaikan
-    const totalCompCount = allComplaints.length;
-    const resolvedCompCount = allComplaints.filter(c => c.status === "resolved").length;
+    const totalCompCount = Number(complaintKpi.totalCompCount ?? 0);
+    const resolvedCompCount = Number(complaintKpi.resolvedCompCount ?? 0);
     const complaintResolvedRate = totalCompCount > 0 ? Math.round((resolvedCompCount / totalCompCount) * 100) : 0;
 
-    // 6. Rekapitulasi sampah terkumpul per kategori
-    const trashSummaryMap: Record<string, { count: number; totalPoints: number }> = {};
-    allDisposals.forEach(d => {
-      if (!trashSummaryMap[d.categoryKey]) {
-        trashSummaryMap[d.categoryKey] = { count: 0, totalPoints: 0 };
-      }
-      trashSummaryMap[d.categoryKey].count += d.itemCount;
-      if (d.status === "approved") {
-        trashSummaryMap[d.categoryKey].totalPoints += d.pointsEarned;
-      }
-    });
-    const trashSummary = Object.entries(trashSummaryMap).map(([key, val]) => ({
-      categoryKey: key,
-      count: val.count,
-      totalPoints: val.totalPoints
+    const trashSummary = trashSummaryRows.map((row) => ({
+      categoryKey: row.categoryKey,
+      count: Number(row.count ?? 0),
+      totalPoints: Number(row.totalPoints ?? 0)
     }));
-
-    // 7. Rekapitulasi reward voucher terpopuler
-    const rewardSummary = allRewards.map(r => {
-      const redCount = allRedemptions.filter(red => red.rewardId === r.id).length;
-      return {
-        title: r.title,
-        provider: r.provider,
-        redemptionCount: redCount,
-        stock: r.stock
-      };
-    }).sort((a, b) => b.redemptionCount - a.redemptionCount).slice(0, 5);
-
-    // 8. Kontributor pengguna teratas
-    const userSummary = activeUsers
-      .sort((a, b) => b.points - a.points)
-      .slice(0, 5)
-      .map(u => ({
-        name: u.name,
-        email: u.email,
-        points: u.points
-      }));
 
     const provinceLeaderboard = await getRegionalLeaderboard("province");
     const regencyLeaderboard = await getRegionalLeaderboard("regency");

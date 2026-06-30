@@ -267,21 +267,21 @@ export default function ComplaintsClient({ initialComplaints }: { initialComplai
                   <div className="mt-5 flex items-center justify-between border-t border-slate-50 pt-4 text-[10px] font-bold text-slate-400">
                     <div className="flex flex-col items-center gap-1.5">
                       <span className={`flex h-5 w-5 items-center justify-center rounded-full text-white text-[9px] ${statusConfig.step >= 1 ? "bg-leaf-700" : "bg-slate-200"}`}>
-                        ✓
+                        1
                       </span>
                       <span className={statusConfig.step >= 1 ? "text-leaf-800" : ""}>Diterima</span>
                     </div>
                     <div className={`h-0.5 flex-1 mx-2 ${statusConfig.step >= 2 ? "bg-leaf-700" : "bg-slate-100"}`} />
                     <div className="flex flex-col items-center gap-1.5">
                       <span className={`flex h-5 w-5 items-center justify-center rounded-full text-white text-[9px] ${statusConfig.step >= 2 ? "bg-leaf-700" : "bg-slate-200"}`}>
-                        {statusConfig.step >= 2 ? "✓" : "2"}
+                        2
                       </span>
                       <span className={statusConfig.step >= 2 ? "text-leaf-800" : ""}>Ditinjau</span>
                     </div>
                     <div className={`h-0.5 flex-1 mx-2 ${statusConfig.step >= 3 ? "bg-leaf-700" : "bg-slate-100"}`} />
                     <div className="flex flex-col items-center gap-1.5">
                       <span className={`flex h-5 w-5 items-center justify-center rounded-full text-white text-[9px] ${statusConfig.step >= 3 ? "bg-leaf-700" : "bg-slate-200"}`}>
-                        {statusConfig.step >= 3 ? "✓" : "3"}
+                        3
                       </span>
                       <span className={statusConfig.step >= 3 ? "text-leaf-800" : ""}>Selesai</span>
                     </div>

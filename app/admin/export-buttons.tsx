@@ -217,21 +217,21 @@ export default function ExportButtons({
         onClick={() => downloadExcel(generateExcelContent(), "Laporan_EcoTech.xls")}
         className="rounded-2xl bg-emerald-600 hover:bg-emerald-700 px-5 py-3 text-sm font-bold text-white shadow-md shadow-emerald-600/10 transition active:scale-95"
       >
-        🟢 Ekspor ke Excel (.XLS)
+        Ekspor ke Excel (.XLS)
       </button>
       
       <button
         onClick={() => downloadWord(generateWordContent(), "Laporan_EcoTech.doc")}
         className="rounded-2xl bg-blue-600 hover:bg-blue-700 px-5 py-3 text-sm font-bold text-white shadow-md shadow-blue-600/10 transition active:scale-95"
       >
-        🔵 Ekspor ke Word (.DOC)
+        Ekspor ke Word (.DOC)
       </button>
 
       <button
         onClick={triggerPrint}
         className="rounded-2xl bg-slate-800 hover:bg-slate-950 px-5 py-3 text-sm font-bold text-white shadow-md shadow-slate-900/10 transition active:scale-95"
       >
-        🖨️ Cetak / Simpan PDF
+        Cetak / Simpan PDF
       </button>
     </div>
   );
