@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getSession } from "@/lib/session";
 import { logout } from "@/app/actions";
+import { LeafIcon } from "@/components/icons";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,8 +20,8 @@ export default async function RootLayout({
       <body className="font-body antialiased">
         <header className="sticky top-0 z-50 border-b border-emerald-900/10 bg-white/80 backdrop-blur">
           <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-            <Link href="/" className="font-display text-xl font-black text-leaf-950">
-              🌿 Eco Tech
+            <Link href="/" className="font-display text-xl font-black text-leaf-950 flex items-center gap-1.5">
+              <LeafIcon className="text-leaf-700" size={24} /> Eco Tech
             </Link>
 
             <div className="flex items-center gap-1">
@@ -31,13 +32,13 @@ export default async function RootLayout({
                 Kamera AI
               </Link>
               <Link href="/rewards" className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-950">
-                Rewards
+                Hadiah
               </Link>
               <Link href="/panduan" className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-950">
                 Panduan
               </Link>
               <Link href="/leaderboard" className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-950">
-                Leaderboard
+                Papan Peringkat
               </Link>
               <Link href="/pengaduan" className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-950">
                 Pengaduan

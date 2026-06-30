@@ -6,6 +6,17 @@ import { getSession } from "@/lib/session";
 import Link from "next/link";
 import ExportButtons from "./export-buttons";
 import {
+  LeafIcon,
+  TrashIcon,
+  MegaphoneIcon,
+  TicketIcon,
+  ChartIcon,
+  UserIcon,
+  TrophyIcon,
+  SettingsIcon,
+  GiftIcon
+} from "@/components/icons";
+import {
   approveDisposal,
   rejectDisposal,
   completeRedemption,
@@ -381,15 +392,15 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
 
   // Sidebar Menu Admin
   const menuItems = [
-    { label: "📊 Ringkasan & Analitik", tab: "stats" },
-    { label: "♻️ Verifikasi Setoran", tab: "disposals" },
-    { label: "📢 Pengaduan Lingkungan", tab: "complaints" },
-    { label: "🎁 Klaim Voucher Hadiah", tab: "redemptions" },
-    { label: "📊 Laporan Eksekutif", tab: "reports" },
-    { label: "⭐ Kelola Rewards", tab: "rewards" },
-    { label: "📝 Kelola Panduan & Poin", tab: "guides" },
-    { label: "🏆 Papan Peringkat Admin", tab: "leaderboard" },
-    { label: "👤 Kelola Pengguna", tab: "users" }
+    { label: "Ringkasan & Analitik", tab: "stats", icon: ChartIcon },
+    { label: "Verifikasi Setoran", tab: "disposals", icon: TrashIcon },
+    { label: "Pengaduan Lingkungan", tab: "complaints", icon: MegaphoneIcon },
+    { label: "Klaim Voucher Hadiah", tab: "redemptions", icon: TicketIcon },
+    { label: "Laporan Eksekutif", tab: "reports", icon: ChartIcon },
+    { label: "Kelola Hadiah", tab: "rewards", icon: GiftIcon },
+    { label: "Kelola Panduan & Poin", tab: "guides", icon: SettingsIcon },
+    { label: "Papan Peringkat Admin", tab: "leaderboard", icon: TrophyIcon },
+    { label: "Kelola Pengguna", tab: "users", icon: UserIcon }
   ];
 
   return (
@@ -410,24 +421,28 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
       <aside className="w-full md:w-64 bg-slate-900 text-slate-100 flex flex-col shrink-0 border-r border-slate-800 print:hidden">
         <div className="p-6 border-b border-slate-800">
           <span className="font-display text-xl font-black tracking-tight text-white flex items-center gap-2">
-            🌿 Eco Tech Admin
+            <LeafIcon className="text-leaf-500" size={24} /> Eco Tech Admin
           </span>
           <p className="text-xs text-slate-400 mt-1">Sistem Pengelolaan Sampah & Poin</p>
         </div>
         <nav className="flex-1 p-4 space-y-1">
-          {menuItems.map((item) => (
-            <Link
-              key={item.tab}
-              href={item.tab === "stats" ? "/admin" : `/admin?tab=${item.tab}`}
-              className={`flex w-full items-center rounded-xl px-4 py-3 text-sm font-semibold transition ${
-                currentTab === item.tab
-                  ? "bg-leaf-700 text-white shadow-md shadow-leaf-700/20"
-                  : "text-slate-300 hover:bg-slate-800 hover:text-white"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.tab}
+                href={item.tab === "stats" ? "/admin" : `/admin?tab=${item.tab}`}
+                className={`flex w-full items-center gap-2.5 rounded-xl px-4 py-3 text-sm font-semibold transition ${
+                  currentTab === item.tab
+                    ? "bg-leaf-700 text-white shadow-md shadow-leaf-700/20"
+                    : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                }`}
+              >
+                <Icon size={18} className={currentTab === item.tab ? "text-white" : "text-slate-400"} />
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
         <div className="p-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
           <span>Masuk sebagai: {session.name}</span>

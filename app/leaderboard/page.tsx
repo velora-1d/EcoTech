@@ -69,11 +69,11 @@ export default async function LeaderboardPage() {
                 </div>
                 <div className={`w-full ${podiumStyles[1].height} ${podiumStyles[1].bg} border-t-4 rounded-t-3xl flex flex-col items-center justify-center shadow-lg shadow-slate-100`}>
                   <span className="text-4xl">{podiumStyles[1].medal}</span>
-                  <span className={`mt-2 font-display text-2xl font-black ${podiumStyles[1].text}`}>2nd</span>
+                  <span className={`mt-2 font-display text-lg font-black ${podiumStyles[1].text}`}>Juara 2</span>
                 </div>
               </div>
             )}
-
+ 
             {/* Juara 1 */}
             {topThree[0] && (
               <div className="order-1 sm:order-2 flex flex-col items-center w-full sm:w-36 md:w-40">
@@ -83,11 +83,11 @@ export default async function LeaderboardPage() {
                 </div>
                 <div className={`w-full ${podiumStyles[0].height} ${podiumStyles[0].bg} border-t-4 rounded-t-[2.5rem] flex flex-col items-center justify-center shadow-xl shadow-amber-100 ring-4 ring-amber-400/20`}>
                   <span className="text-5xl">{podiumStyles[0].medal}</span>
-                  <span className={`mt-2 font-display text-3xl font-black ${podiumStyles[0].text}`}>1st</span>
+                  <span className={`mt-2 font-display text-xl font-black ${podiumStyles[0].text}`}>Juara 1</span>
                 </div>
               </div>
             )}
-
+ 
             {/* Juara 3 */}
             {topThree[2] && (
               <div className="order-3 flex flex-col items-center w-full sm:w-32 md:w-36">
@@ -97,7 +97,7 @@ export default async function LeaderboardPage() {
                 </div>
                 <div className={`w-full ${podiumStyles[2].height} ${podiumStyles[2].bg} border-t-4 rounded-t-3xl flex flex-col items-center justify-center shadow-lg shadow-orange-50`}>
                   <span className="text-4xl">{podiumStyles[2].medal}</span>
-                  <span className={`mt-2 font-display text-2xl font-black ${podiumStyles[2].text}`}>3rd</span>
+                  <span className={`mt-2 font-display text-lg font-black ${podiumStyles[2].text}`}>Juara 3</span>
                 </div>
               </div>
             )}
