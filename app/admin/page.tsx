@@ -438,7 +438,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
       <AdminSidebar session={session} currentTab={currentTab} onLogout={logout} onSimulateUser={loginAsDemoUser} />
 
       {/* Konten Kanan */}
-      <main className="flex-1 p-6 md:p-10 pt-24 md:pt-10 md:ml-64 overflow-y-auto max-w-7xl print:w-full print:p-0">
+      <main className="flex-1 p-6 md:p-10 pt-24 md:pt-10 md:ml-64 overflow-y-auto w-full print:w-full print:p-0">
         
         {/* TAB 1: RINGKASAN & ANALITIK */}
         {currentTab === "stats" && statsData && (
@@ -1817,7 +1817,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
                     <p>Menyalurkan aspirasi kebersihan warga mengenai tumpukan sampah liar langsung ke pengelola:</p>
                     <ul className="list-disc pl-5 space-y-2">
                       <li><strong>Input Lengkap:</strong> Pengisian judul, deskripsi kejadian, patokan lokasi spesifik, dan unggah foto bukti digital.</li>
-                      <li><strong>Status Aduan Formal:</strong> Penanda status tanpa emoji yang berganti otomatis dari *Pending* -> *Ditinjau* -> *Selesai / Ditolak* disertai kolom catatan penyelesaian dari administrator.</li>
+                      <li><strong>Status Aduan Formal:</strong> Penanda status tanpa emoji yang berganti otomatis dari *Pending* &rarr; *Ditinjau* &rarr; *Selesai / Ditolak* disertai kolom catatan penyelesaian dari administrator.</li>
                     </ul>
                   </div>
                 </section>
@@ -1870,7 +1870,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
                     <p>Alur verifikasi kebersihan depo dan aduan pencemaran lingkungan:</p>
                     <ul className="list-disc pl-5 space-y-2">
                       <li><strong>Aksi Setoran:</strong> Petugas membandingkan fisik sampah dengan foto. Tombol *Setujui* akan mengirim poin secara instan, tombol *Tolak* membatalkan setoran.</li>
-                      <li><strong>Tindak Lanjut Aduan:</strong> Review lokasi aduan, ubah status laporan (*Pending* -> *Ditinjau* -> *Selesai*), dan tulis catatan detail tindakan penyelesaian dari petugas kebersihan.</li>
+                      <li><strong>Tindak Lanjut Aduan:</strong> Review lokasi aduan, ubah status laporan (*Pending* &rarr; *Ditinjau* &rarr; *Selesai*), dan tulis catatan detail tindakan penyelesaian dari petugas kebersihan.</li>
                     </ul>
                   </div>
                 </section>
