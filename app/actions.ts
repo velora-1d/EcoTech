@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, sql, desc, count } from "drizzle-orm";
+import { eq, sql, desc, count, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
@@ -736,6 +736,48 @@ export async function deleteComplaint(complaintId: string) {
 
   revalidatePath("/admin");
   revalidatePath("/pengaduan");
+}
+
+export async function getRegionalLeaderboard(level: "province" | "regency" | "district" | "village" | "hamlet") {
+  if (!db) return [];
+
+  let groupColumn;
+  switch (level) {
+    case "province": groupColumn = users.province; break;
+    case "regency": groupColumn = users.regency; break;
+    case "district": groupColumn = users.district; break;
+    case "village": groupColumn = users.village; break;
+    case "hamlet": groupColumn = users.hamlet; break;
+    default: groupColumn = users.province;
+  }
+
+  const result = await db
+    .select({
+      regionName: groupColumn,
+      totalPoints: sql<number>`sum(${disposals.pointsEarned})`,
+      totalItems: sql<number>`sum(${disposals.itemCount})`,
+      userCount: sql<number>`count(distinct ${users.id})`
+    })
+    .from(disposals)
+    .innerJoin(users, eq(disposals.userId, users.id))
+    .where(
+      and(
+        eq(disposals.status, "approved"),
+        sql`${users.role} != 'admin'`,
+        sql`${groupColumn} IS NOT NULL`,
+        sql`${groupColumn} != ''`
+      )
+    )
+    .groupBy(groupColumn)
+    .orderBy(desc(sql`sum(${disposals.pointsEarned})`))
+    .limit(10);
+
+  return result.map((r) => ({
+    regionName: r.regionName || "Tidak Diketahui",
+    totalPoints: Number(r.totalPoints ?? 0),
+    totalItems: Number(r.totalItems ?? 0),
+    userCount: Number(r.userCount ?? 0)
+  }));
 }
 
 

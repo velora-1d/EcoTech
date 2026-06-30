@@ -33,7 +33,8 @@ import {
   updateComplaintStatus,
   deleteComplaint,
   logout,
-  loginAsDemoUser
+  loginAsDemoUser,
+  getRegionalLeaderboard
 } from "@/app/actions";
 
 type SearchParams = Promise<{
@@ -379,13 +380,24 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
         points: u.points
       }));
 
+    const provinceLeaderboard = await getRegionalLeaderboard("province");
+    const regencyLeaderboard = await getRegionalLeaderboard("regency");
+    const districtLeaderboard = await getRegionalLeaderboard("district");
+    
+    const topProvince = provinceLeaderboard[0]?.regionName || "Tidak Ada";
+    const topRegency = regencyLeaderboard[0]?.regionName || "Tidak Ada";
+    const topDistrict = districtLeaderboard[0]?.regionName || "Tidak Ada";
+
     reportData = {
       kpis: {
         totalPointsCirculating,
         averagePointsPerUser,
         disposalSuccessRate,
         redemptionRate,
-        complaintResolvedRate
+        complaintResolvedRate,
+        topProvince,
+        topRegency,
+        topDistrict
       },
       trashSummary,
       rewardSummary,
@@ -1016,6 +1028,27 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
                       <Icon size={18} />
                     </div>
                     <div className="mt-4 text-2xl font-black text-slate-800">{kpi.value}</div>
+                    <div className="mt-1 text-xs font-bold text-slate-800 uppercase tracking-wider">{kpi.label}</div>
+                    <div className="text-[10px] text-slate-400 mt-0.5 font-semibold">{kpi.sub}</div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Grid Regional KPI Cards */}
+            <div className="mt-6 grid gap-5 sm:grid-cols-3">
+              {[
+                { label: "Provinsi Teraktif", value: reportData.kpis.topProvince, sub: "Kontribusi poin tertinggi", icon: TrophyIcon, color: "text-amber-600 bg-amber-50" },
+                { label: "Kabupaten/Kota Teraktif", value: reportData.kpis.topRegency, sub: "Kontribusi poin tertinggi", icon: TrophyIcon, color: "text-slate-600 bg-slate-100" },
+                { label: "Kecamatan Teraktif", value: reportData.kpis.topDistrict, sub: "Kontribusi poin tertinggi", icon: TrophyIcon, color: "text-emerald-600 bg-emerald-50" }
+              ].map((kpi) => {
+                const Icon = kpi.icon;
+                return (
+                  <div key={kpi.label} className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xl shadow-slate-900/5">
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-2xl ${kpi.color}`}>
+                      <Icon size={18} />
+                    </div>
+                    <div className="mt-4 text-lg font-black text-slate-800 capitalize truncate">{kpi.value.toLowerCase()}</div>
                     <div className="mt-1 text-xs font-bold text-slate-800 uppercase tracking-wider">{kpi.label}</div>
                     <div className="text-[10px] text-slate-400 mt-0.5 font-semibold">{kpi.sub}</div>
                   </div>
