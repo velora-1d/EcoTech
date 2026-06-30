@@ -8,6 +8,9 @@ type KPIProps = {
   disposalSuccessRate: number;
   redemptionRate: number;
   complaintResolvedRate: number;
+  topProvince?: string;
+  topRegency?: string;
+  topDistrict?: string;
 };
 
 type TrashSummaryProps = {
@@ -57,6 +60,13 @@ export default function ExportButtons({
         <tr><td>Persentase Penukaran Poin (Redemption)</td><td class="text-right font-bold">${kpis.redemptionRate}</td><td>%</td></tr>
         <tr class="bg-gray"><td>Tingkat Penyelesaian Pengaduan</td><td class="text-right font-bold">${kpis.complaintResolvedRate}</td><td>%</td></tr>
         <tr><td></td></tr>
+        
+        <!-- KPI REGIONAL -->
+        <tr><th colspan="3">WILAYAH KONTRIBUSI TERAKTIF</th></tr>
+        <tr class="bg-gray"><td>Provinsi Teraktif</td><td colspan="2" class="font-bold">${kpis.topProvince || "Tidak Ada"}</td></tr>
+        <tr><td>Kabupaten/Kota Teraktif</td><td colspan="2" class="font-bold">${kpis.topRegency || "Tidak Ada"}</td></tr>
+        <tr class="bg-gray"><td>Kecamatan Teraktif</td><td colspan="2" class="font-bold">${kpis.topDistrict || "Tidak Ada"}</td></tr>
+        <tr><td></td></tr>
 
         <!-- REKAPITULASI SAMPAH -->
         <tr><th colspan="3">REKAPITULASI SAMPAH TERKUMPUL</th></tr>
@@ -103,7 +113,7 @@ export default function ExportButtons({
       <p>Tanggal Laporan: <strong>${new Date().toLocaleDateString("id-ID", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</strong></p>
       <p>Laporan ini menyajikan ringkasan indikator kinerja utama (KPI), rekapitulasi setoran sampah, popularitas penukaran hadiah, dan pengguna teraktif.</p>
       
-      <h2>1. INDIKATOR KINERJA UTAMA (KPI)</h2>
+      <h2>1. INDIKATOR KINERJA UTAMA (KPI) & ANALISIS WILAYAH</h2>
       <div class="kpi-container">
         <div class="kpi-card">
           <div class="kpi-title">Total Saldo Poin Aktif Pengguna</div>
@@ -124,6 +134,18 @@ export default function ExportButtons({
         <div class="kpi-card">
           <div class="kpi-title">Penyelesaian Pengaduan Sungai & Sampah</div>
           <div class="kpi-value">${kpis.complaintResolvedRate}%</div>
+        </div>
+        <div class="kpi-card" style="border-left: 4px solid #10b981;">
+          <div class="kpi-title">Provinsi Teraktif</div>
+          <div class="kpi-value">${kpis.topProvince || "Tidak Ada"}</div>
+        </div>
+        <div class="kpi-card" style="border-left: 4px solid #3b82f6;">
+          <div class="kpi-title">Kabupaten/Kota Teraktif</div>
+          <div class="kpi-value">${kpis.topRegency || "Tidak Ada"}</div>
+        </div>
+        <div class="kpi-card" style="border-left: 4px solid #f59e0b;">
+          <div class="kpi-title">Kecamatan Teraktif</div>
+          <div class="kpi-value">${kpis.topDistrict || "Tidak Ada"}</div>
         </div>
       </div>
 
