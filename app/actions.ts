@@ -101,10 +101,9 @@ export async function login(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
 
-  // Bypass admin via env — bekerja tanpa DB
+  // Jika admin mencoba login di pintu user biasa, tolak & arahkan ke portal admin
   if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-    await createSession({ userId: "env-admin", email, name: "Admin", role: "admin" });
-    redirect("/admin");
+    redirect("/admin/login?error=Harap+masuk+melalui+portal+khusus+admin.");
   }
 
   if (!db) {
@@ -117,6 +116,10 @@ export async function login(formData: FormData) {
     redirect("/login?error=Email+atau+password+salah.");
   }
 
+  if (user.role === "admin") {
+    redirect("/admin/login?error=Harap+masuk+melalui+portal+khusus+admin.");
+  }
+
   if (user.isBlocked) {
     redirect("/login?error=Akun+Anda+telah+diblokir+karena+indikasi+kecurangan.");
   }
@@ -125,15 +128,102 @@ export async function login(formData: FormData) {
     userId: user.id,
     email: user.email,
     name: user.name,
-    role: user.role as "user" | "admin"
+    role: "user"
   });
 
-  redirect(user.role === "admin" ? "/admin" : "/");
+  redirect("/");
+}
+
+export async function adminLogin(formData: FormData) {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const password = String(formData.get("password") ?? "");
+
+  // 1. Periksa bypass admin via env
+  if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+    await createSession({ userId: "env-admin", email, name: "Admin", role: "admin" });
+    redirect("/admin");
+  }
+
+  if (!db) {
+    redirect("/admin/login?error=Database+belum+tersambung.");
+  }
+
+  // 2. Periksa di database
+  const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+
+  if (!user || !user.passwordHash || !verifyPassword(password, user.passwordHash)) {
+    redirect("/admin/login?error=Email+atau+password+salah.");
+  }
+
+  // Tolak jika bukan admin
+  if (user.role !== "admin") {
+    redirect("/admin/login?error=Akses+ditolak.+Halaman+ini+hanya+untuk+Administrator.");
+  }
+
+  await createSession({
+    userId: user.id,
+    email: user.email,
+    name: user.name,
+    role: "admin"
+  });
+
+  redirect("/admin");
 }
 
 export async function logout() {
   await destroySession();
   redirect("/login");
+}
+
+export async function loginAsDemoUser() {
+  const session = await getSession();
+  if (session?.role !== "admin") {
+    redirect("/login?error=Akses+ditolak.+Hanya+admin+yang+dapat+mengakses+mode+simulasi.");
+  }
+
+  const demoEmail = "demo-tester@ecotech.id";
+  let demoUser = null;
+  
+  if (db) {
+    const [existing] = await db.select().from(users).where(eq(users.email, demoEmail)).limit(1);
+    demoUser = existing;
+
+    if (!demoUser) {
+      const [inserted] = await db.insert(users).values({
+        name: "Tester Admin",
+        email: demoEmail,
+        role: "user",
+        points: 500,
+        province: "DKI JAKARTA",
+        regency: "KOTA JAKARTA SELATAN",
+        district: "KEBAYORAN BARU",
+        village: "MELAWAI",
+        hamlet: "RT 01/RW 01"
+      }).returning();
+      demoUser = inserted;
+    }
+  }
+
+  await destroySession();
+  
+  if (demoUser) {
+    await createSession({
+      userId: demoUser.id,
+      email: demoUser.email,
+      name: demoUser.name,
+      role: "user"
+    });
+  } else {
+    // Fallback jika DB belum tersambung
+    await createSession({
+      userId: "demo-tester-id",
+      email: demoEmail,
+      name: "Tester Admin (Mock)",
+      role: "user"
+    });
+  }
+
+  redirect("/");
 }
 
 export async function analyzeTrashImage(base64Image: string) {

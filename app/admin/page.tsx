@@ -5,6 +5,7 @@ import { disposals, rewards, users, redemptions, trashGuides, complaints } from 
 import { getSession } from "@/lib/session";
 import Link from "next/link";
 import ExportButtons from "./export-buttons";
+import AdminSidebar from "@/components/admin-sidebar";
 import {
   LeafIcon,
   TrashIcon,
@@ -30,7 +31,9 @@ import {
   toggleUserBlock,
   ensureInitialSeeds,
   updateComplaintStatus,
-  deleteComplaint
+  deleteComplaint,
+  logout,
+  loginAsDemoUser
 } from "@/app/actions";
 
 type SearchParams = Promise<{
@@ -404,7 +407,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
   ];
 
   return (
-    <div className="flex min-h-screen flex-col md:flex-row bg-slate-50">
+    <div className="flex min-h-screen bg-slate-50">
       {/* CSS Cetak PDF Khusus (Hanya bekerja saat window.print) */}
       <style>{`
         @media print {
@@ -417,44 +420,11 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
         }
       `}</style>
 
-      {/* Sidebar Kiri */}
-      <aside className="w-full md:w-64 bg-slate-900 text-slate-100 flex flex-col shrink-0 border-b md:border-r border-slate-800 print:hidden">
-        <div className="p-4 md:p-6 border-b border-slate-800 flex md:flex-col justify-between items-center md:items-start">
-          <div>
-            <span className="font-display text-base md:text-xl font-black tracking-tight text-white flex items-center gap-2">
-              <LeafIcon className="text-leaf-500" size={20} /> Eco Tech Admin
-            </span>
-            <p className="hidden md:block text-xs text-slate-400 mt-1">Sistem Pengelolaan Sampah & Poin</p>
-          </div>
-          <Link href="/" className="md:hidden text-xs underline text-leaf-400 hover:text-leaf-300 font-bold">Kembali</Link>
-        </div>
-        <nav className="p-3 md:p-4 flex md:flex-col gap-1 overflow-x-auto md:overflow-x-visible md:space-y-1 flex-row flex-nowrap scrollbar-none">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.tab}
-                href={item.tab === "stats" ? "/admin" : `/admin?tab=${item.tab}`}
-                className={`flex shrink-0 items-center gap-2 rounded-xl px-3 py-2 md:px-4 md:py-3 text-xs md:text-sm font-semibold transition ${
-                  currentTab === item.tab
-                    ? "bg-leaf-700 text-white shadow-md shadow-leaf-700/20"
-                    : "text-slate-300 hover:bg-slate-800 hover:text-white"
-                }`}
-              >
-                <Icon size={16} className={currentTab === item.tab ? "text-white" : "text-slate-400"} />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-        <div className="hidden md:flex p-4 border-t border-slate-800 items-center justify-between text-xs text-slate-400">
-          <span>Masuk sebagai: {session.name}</span>
-          <Link href="/" className="underline text-leaf-400 hover:text-leaf-300 font-bold">Kembali</Link>
-        </div>
-      </aside>
+      {/* Sidebar Admin Responsif (Ikon SVG Murni, Tanpa Emoji) */}
+      <AdminSidebar session={session} currentTab={currentTab} onLogout={logout} onSimulateUser={loginAsDemoUser} />
 
       {/* Konten Kanan */}
-      <main className="flex-1 p-6 md:p-10 overflow-y-auto max-w-7xl print:w-full print:p-0">
+      <main className="flex-1 p-6 md:p-10 pt-24 md:pt-10 md:ml-64 overflow-y-auto max-w-7xl print:w-full print:p-0">
         
         {/* TAB 1: RINGKASAN & ANALITIK */}
         {currentTab === "stats" && statsData && (
