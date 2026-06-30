@@ -17,7 +17,7 @@ export default async function PanduanPage() {
       {/* Header */}
       <div className="text-center md:text-left">
         <h1 className="font-display text-4xl font-black tracking-tight text-leaf-950 sm:text-5xl">
-          Panduan Pemilahan Sampah ♻️
+          Panduan Pemilahan Sampah
         </h1>
         <p className="mt-3 text-lg text-slate-600 max-w-2xl">
           Untuk menjaga lingkungan tetap bersih dan memastikan setoran Anda disetujui oleh admin, ikuti panduan pemilahan dan perhitungan poin di bawah ini.
@@ -75,7 +75,7 @@ export default async function PanduanPage() {
 
         {guides.length === 0 && (
           <div className="col-span-full rounded-3xl bg-amber-50 p-6 text-center text-amber-800">
-            ⚠️ Belum ada panduan pemilahan yang terkonfigurasi di database.
+            Belum ada panduan pemilahan yang terkonfigurasi di database.
           </div>
         )}
       </div>

@@ -1,27 +1,29 @@
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
-import { redemptions, rewards, users } from "@/db/schema";
+import { redemptions, rewards, users, trashGuides } from "@/db/schema";
 import { getSession } from "@/lib/session";
 import { seedRewards, redeemReward } from "@/app/actions";
 
 async function getPageData(userId?: string) {
-  if (!db) return { rewardList: [], userPoints: 0, redeemedIds: new Set<string>() };
+  if (!db) return { rewardList: [], userPoints: 0, redeemedIds: new Set<string>(), guidesList: [] };
   await seedRewards();
 
-  const [rewardList, userRow, userRedemptions] = await Promise.all([
+  const [rewardList, userRow, userRedemptions, guidesList] = await Promise.all([
     db.select().from(rewards).orderBy(rewards.cost),
     userId
       ? db.select({ points: users.points }).from(users).where(eq(users.id, userId)).limit(1)
       : Promise.resolve([]),
     userId
       ? db.select({ rewardId: redemptions.rewardId }).from(redemptions).where(eq(redemptions.userId, userId))
-      : Promise.resolve([])
+      : Promise.resolve([]),
+    db.select().from(trashGuides).orderBy(trashGuides.pointsPerItem)
   ]);
 
   return {
     rewardList,
     userPoints: userRow[0]?.points ?? 0,
-    redeemedIds: new Set(userRedemptions.map((r) => r.rewardId))
+    redeemedIds: new Set(userRedemptions.map((r) => r.rewardId)),
+    guidesList
   };
 }
 
@@ -31,7 +33,7 @@ export default async function RewardsPage({ searchParams }: Props) {
   const { error } = await searchParams;
   const session = await getSession();
   const isRealUser = session && session.userId !== "env-admin";
-  const { rewardList, userPoints, redeemedIds } = await getPageData(isRealUser ? session.userId : undefined);
+  const { rewardList, userPoints, redeemedIds, guidesList } = await getPageData(isRealUser ? session.userId : undefined);
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
@@ -42,7 +44,7 @@ export default async function RewardsPage({ searchParams }: Props) {
       )}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="font-display text-3xl font-black text-leaf-950">Rewards</h1>
+          <h1 className="font-display text-3xl font-black text-leaf-950">Katalog Hadiah</h1>
           <p className="mt-1 text-sm text-slate-600">Tukarkan poin dengan hadiah pilihanmu.</p>
         </div>
         {isRealUser && (
@@ -83,7 +85,7 @@ export default async function RewardsPage({ searchParams }: Props) {
                       <span className="text-xs text-slate-400">Login untuk tukar</span>
                     ) : alreadyRedeemed ? (
                       <span className="rounded-xl bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-500">
-                        ✅ Sudah ditukar
+                        Sudah ditukar
                       </span>
                     ) : (
                       <form action={redeemReward.bind(null, reward.id)}>
@@ -114,21 +116,15 @@ export default async function RewardsPage({ searchParams }: Props) {
         <div className="rounded-[1.5rem] border border-emerald-900/10 bg-white p-6 shadow-xl shadow-emerald-900/5">
           <h2 className="font-display text-xl font-black">Cara Maksimalkan Poin</h2>
           <ul className="mt-4 space-y-3">
-            {[
-              { label: "1 item metal", pts: "50 poin" },
-              { label: "1 item plastik bersih", pts: "40 poin" },
-              { label: "1 item kain", pts: "30 poin" },
-              { label: "1 item kertas kering", pts: "25 poin" },
-              { label: "1 item organik", pts: "20 poin" },
-            ].map(({ label, pts }) => (
-              <li key={label} className="flex items-center justify-between rounded-2xl border border-slate-100 px-4 py-3">
-                <span className="text-sm text-slate-700">{label}</span>
-                <span className="text-sm font-bold text-leaf-700">{pts}</span>
+            {guidesList.map((g) => (
+              <li key={g.id} className="flex items-center justify-between rounded-2xl border border-slate-100 px-4 py-3">
+                <span className="text-sm text-slate-700 capitalize">1 item {g.title.toLowerCase()}</span>
+                <span className="text-sm font-bold text-leaf-700">{g.pointsPerItem} poin</span>
               </li>
             ))}
           </ul>
           <p className="mt-5 rounded-2xl bg-leaf-50 p-4 text-sm text-slate-600">
-            💡 Metal dan plastik bersih memberi poin tertinggi. Fokus di sana untuk unlock reward lebih cepat.
+            Tip: Metal dan plastik bersih memberi poin tertinggi. Fokus di sana untuk unlock reward lebih cepat.
           </p>
           {!session && (
             <a href="/register" className="mt-4 block w-full rounded-2xl bg-leaf-700 px-5 py-3 text-center font-bold text-white hover:bg-leaf-950">

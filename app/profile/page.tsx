@@ -3,6 +3,7 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { disposals, redemptions, rewards, users } from "@/db/schema";
 import { getSession } from "@/lib/session";
+import { LeafIcon, TrashIcon, GiftIcon } from "@/components/icons";
 
 async function getProfileData(userId: string) {
   if (!db) return null;
@@ -72,11 +73,11 @@ export default async function ProfilePage() {
       <section className="rounded-[2rem] border border-emerald-900/10 bg-white/75 p-6 shadow-xl shadow-emerald-900/5 backdrop-blur md:p-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-leaf-100 text-3xl">
-              🌿
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-leaf-100 text-leaf-700">
+              <LeafIcon size={32} />
             </div>
             <div>
-              <h1 className="font-display text-2xl font-black text-leaf-950">{session.name}</h1>
+              <h1 className="font-display text-2xl font-black text-leaf-955">{session.name}</h1>
               <p className="text-sm text-slate-500">{session.email}</p>
               {data?.user?.createdAt && (
                 <p className="mt-1 text-xs text-slate-400">
@@ -86,7 +87,7 @@ export default async function ProfilePage() {
             </div>
           </div>
           <div className="text-left sm:text-right bg-leaf-50 px-6 py-3 rounded-2xl border border-leaf-100">
-            <div className="text-3xl font-black text-leaf-950">{data?.user?.points ?? 0}</div>
+            <div className="text-3xl font-black text-leaf-955">{data?.user?.points ?? 0}</div>
             <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Saldo Poin Aktif</div>
           </div>
         </div>
@@ -101,13 +102,13 @@ export default async function ProfilePage() {
       {/* Grid Stats */}
       <div className="grid gap-4 sm:grid-cols-3">
         {[
-          { label: "Total Poin Disetujui", value: totalDisposalPoints, icon: "🌿" },
-          { label: "Item Sampah Terverifikasi", value: totalItemsDisposed, icon: "♻️" },
-          { label: "Kupon Hadiah Ditukar", value: data?.redemptionHistory.length ?? 0, icon: "🎁" }
-        ].map(({ label, value, icon }) => (
+          { label: "Total Poin Disetujui", value: totalDisposalPoints, icon: LeafIcon },
+          { label: "Item Sampah Terverifikasi", value: totalItemsDisposed, icon: TrashIcon },
+          { label: "Kupon Hadiah Ditukar", value: data?.redemptionHistory.length ?? 0, icon: GiftIcon }
+        ].map(({ label, value, icon: Icon }) => (
           <div key={label} className="rounded-[1.5rem] border border-emerald-900/10 bg-white p-5 shadow-lg shadow-emerald-900/5">
-            <div className="text-2xl">{icon}</div>
-            <div className="mt-2 text-2xl font-black text-leaf-950">{value}</div>
+            <div className="text-leaf-700"><Icon size={24} /></div>
+            <div className="mt-2 text-2xl font-black text-leaf-955">{value}</div>
             <div className="mt-1 text-sm text-slate-500">{label}</div>
           </div>
         ))}

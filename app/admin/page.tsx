@@ -63,7 +63,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
         <div className="rounded-3xl bg-white p-8 text-center shadow-xl max-w-sm">
-          <div className="text-4xl mb-3">⚠️</div>
+          <div className="text-4xl mb-3 text-amber-500 font-bold">!</div>
           <h1 className="text-xl font-bold text-slate-800">Database Belum Tersambung</h1>
           <p className="text-sm text-slate-500 mt-2">Pastikan DATABASE_URL di berkas .env Anda terisi dengan benar.</p>
         </div>
@@ -464,20 +464,23 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
             {/* Grid Cards */}
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
               {[
-                { label: "Pengguna Aktif", value: statsData.userCount, icon: "👤", color: "text-blue-600 bg-blue-50" },
-                { label: "Total Setoran", value: statsData.disposalCount, icon: "♻️", color: "text-emerald-600 bg-emerald-50" },
-                { label: "Poin Disetujui", value: statsData.totalPointsApproved, icon: "🌿", color: "text-leaf-700 bg-leaf-50" },
-                { label: "Katalog Rewards", value: statsData.rewardCount, icon: "🎁", color: "text-amber-600 bg-amber-50" },
-                { label: "Kupon Ditukarkan", value: statsData.redemptionCount, icon: "🎫", color: "text-rose-600 bg-rose-50" }
-              ].map((card) => (
-                <div key={card.label} className="rounded-3xl border border-slate-100 bg-white p-6 shadow-xl shadow-slate-900/5">
-                  <div className={`flex h-11 w-11 items-center justify-center rounded-2xl text-xl font-bold ${card.color}`}>
-                    {card.icon}
+                { label: "Pengguna Aktif", value: statsData.userCount, icon: UserIcon, color: "text-blue-600 bg-blue-50" },
+                { label: "Total Setoran", value: statsData.disposalCount, icon: TrashIcon, color: "text-emerald-600 bg-emerald-50" },
+                { label: "Poin Disetujui", value: statsData.totalPointsApproved, icon: LeafIcon, color: "text-leaf-700 bg-leaf-50" },
+                { label: "Katalog Hadiah", value: statsData.rewardCount, icon: GiftIcon, color: "text-amber-600 bg-amber-50" },
+                { label: "Kupon Ditukarkan", value: statsData.redemptionCount, icon: TicketIcon, color: "text-rose-600 bg-rose-50" }
+              ].map((card) => {
+                const Icon = card.icon;
+                return (
+                  <div key={card.label} className="rounded-3xl border border-slate-100 bg-white p-6 shadow-xl shadow-slate-900/5">
+                    <div className={`flex h-11 w-11 items-center justify-center rounded-2xl ${card.color}`}>
+                      <Icon size={20} />
+                    </div>
+                    <div className="mt-4 text-3xl font-black text-slate-800">{card.value}</div>
+                    <div className="mt-1 text-xs font-bold text-slate-400 uppercase tracking-wider">{card.label}</div>
                   </div>
-                  <div className="mt-4 text-3xl font-black text-slate-800">{card.value}</div>
-                  <div className="mt-1 text-xs font-bold text-slate-400 uppercase tracking-wider">{card.label}</div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Grafik Komposisi Sampah */}

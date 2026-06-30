@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { createDisposalDirect, analyzeTrashImage } from "@/app/actions";
+import { TrashIcon, LeafIcon } from "@/components/icons";
 
 export type GuideData = {
   id: string;
@@ -160,7 +161,7 @@ export default function DisposalClient({ guides }: { guides: GuideData[] }) {
           {scanState.status === "scanning" && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
               <div className="text-center text-white">
-                <span className="inline-block animate-spin text-4xl mb-3">⚡</span>
+                <div className="animate-spin h-8 w-8 border-4 border-leaf-500 border-t-transparent rounded-full mx-auto mb-3"></div>
                 <div className="text-sm font-bold uppercase tracking-wider">AI sedang menganalisis foto...</div>
                 <div className="text-xs text-slate-300 mt-1">Menghubungi OpenAI Compatible Engine</div>
               </div>
@@ -173,7 +174,7 @@ export default function DisposalClient({ guides }: { guides: GuideData[] }) {
         )}
 
         {submitError && (
-          <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-semibold text-amber-700">⚠️ {submitError}</p>
+          <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-semibold text-amber-700">{submitError}</p>
         )}
 
         {/* Aksi Kamera */}
@@ -182,21 +183,21 @@ export default function DisposalClient({ guides }: { guides: GuideData[] }) {
             onClick={startCamera}
             className="flex-1 rounded-2xl border-2 border-slate-200 bg-white px-5 py-3.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-95"
           >
-            📷 {isCameraActive ? "Aktifkan Kamera Ulang" : "Aktifkan Kamera"}
+            {isCameraActive ? "Aktifkan Kamera Ulang" : "Aktifkan Kamera"}
           </button>
           <button
             onClick={handleScan}
             disabled={!isCameraActive || scanState.status === "scanning"}
             className="flex-1 rounded-2xl bg-leaf-700 px-5 py-3.5 text-sm font-black text-white shadow-lg shadow-leaf-700/20 transition hover:bg-leaf-950 disabled:cursor-not-allowed disabled:opacity-50 active:scale-95"
           >
-            {scanState.status === "scanning" ? "Menganalisis..." : "🤖 Pindai Cerdas"}
+            {scanState.status === "scanning" ? "Menganalisis..." : "Pindai Cerdas"}
           </button>
         </div>
 
         {/* Hasil Scan Objek Gagal Dikenali */}
         {scanState.status === "unclear" && (
           <div className="mt-6 rounded-2xl bg-amber-50 p-5 ring-1 ring-amber-200">
-            <h3 className="font-bold text-amber-800">⚠️ Pemindaian Gagal</h3>
+            <h3 className="font-bold text-amber-800">Pemindaian Gagal</h3>
             <p className="mt-1 text-sm leading-relaxed text-amber-700">
               {scanState.message || "AI tidak dapat mengenali objek. Dekatkan kamera atau pastikan cahaya cukup."}
             </p>
@@ -204,7 +205,7 @@ export default function DisposalClient({ guides }: { guides: GuideData[] }) {
               onClick={() => setScanState({ status: "idle" })}
               className="mt-4 rounded-xl bg-amber-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-amber-700"
             >
-              🔄 Coba Lagi
+              Coba Lagi
             </button>
           </div>
         )}
@@ -212,20 +213,17 @@ export default function DisposalClient({ guides }: { guides: GuideData[] }) {
         {/* Hasil Scan Objek Bukan Sampah (Invalid) */}
         {scanState.status === "invalid" && (
           <div className="mt-6 rounded-[1.5rem] bg-rose-50 p-5 ring-1 ring-rose-200">
-            <div className="flex items-start gap-3">
-              <div className="text-2xl">🚫</div>
-              <div>
-                <h3 className="font-bold text-rose-950">Sampah Tidak Layak Setor</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-rose-700">
-                  {scanState.reason}
-                </p>
-              </div>
+            <div>
+              <h3 className="font-bold text-rose-955">Sampah Tidak Layak Setor</h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-rose-700">
+                {scanState.reason}
+              </p>
             </div>
             <button
               onClick={() => setScanState({ status: "idle" })}
               className="mt-4 w-full rounded-xl bg-rose-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-rose-700 active:scale-95"
             >
-              🔄 Scan Sampah Lain
+              Scan Sampah Lain
             </button>
           </div>
         )}
@@ -234,8 +232,8 @@ export default function DisposalClient({ guides }: { guides: GuideData[] }) {
         {scanState.status === "detected" && activeGuide && (
           <div className="mt-6 rounded-[1.5rem] bg-leaf-50 p-5 ring-1 ring-leaf-200/50 md:p-6">
             <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-leaf-100 text-2xl">
-                ♻️
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-leaf-100 text-leaf-700">
+                <TrashIcon size={24} />
               </div>
               <div className="flex-1">
                 <span className="text-xs font-bold text-leaf-600 uppercase tracking-widest">Kategori Terdeteksi</span>
@@ -301,7 +299,7 @@ export default function DisposalClient({ guides }: { guides: GuideData[] }) {
                 onClick={() => handleConfirm(scanState.categoryKey)}
                 className="flex-1 rounded-2xl bg-leaf-700 py-3.5 text-sm font-black text-white hover:bg-leaf-950 transition active:scale-95 shadow-md shadow-leaf-700/10"
               >
-                ✅ Kirim Setoran (Pending)
+                Kirim Setoran (Pending)
               </button>
               <button
                 onClick={() => setScanState({ status: "idle" })}
@@ -316,7 +314,6 @@ export default function DisposalClient({ guides }: { guides: GuideData[] }) {
         {/* Setoran Selesai Terkirim */}
         {scanState.status === "done" && (
           <div className="mt-6 rounded-[1.5rem] bg-leaf-700 p-6 text-center text-white shadow-xl shadow-leaf-950/15">
-            <div className="text-5xl">🎉</div>
             <h3 className="mt-3 text-2xl font-black">Setoran Berhasil Diajukan!</h3>
             <p className="mt-2 text-sm text-leaf-100 max-w-sm mx-auto leading-relaxed">
               Anda mendapatkan estimasi <strong className="text-white">+{scanState.pointsEarned} poin</strong>.

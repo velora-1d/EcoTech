@@ -132,13 +132,13 @@ export default function ComplaintsClient({ initialComplaints }: { initialComplai
 
         {formSuccess && (
           <div className="mt-6 rounded-2xl bg-emerald-50 p-4 border border-emerald-100 text-sm font-semibold text-emerald-800">
-            🎉 Laporan Anda telah berhasil terkirim! Admin akan meninjau lokasi dalam waktu dekat.
+            Laporan Anda telah berhasil terkirim! Admin akan meninjau lokasi dalam waktu dekat.
           </div>
         )}
 
         {formError && (
           <div className="mt-6 rounded-2xl bg-rose-50 p-4 border border-rose-100 text-sm font-semibold text-rose-800">
-            ⚠️ {formError}
+            {formError}
           </div>
         )}
 
@@ -189,7 +189,7 @@ export default function ComplaintsClient({ initialComplaints }: { initialComplai
                 htmlFor="file-upload"
                 className="flex w-full sm:w-auto items-center justify-center cursor-pointer gap-2 rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 hover:bg-slate-100 px-6 py-4 text-sm font-semibold text-slate-600 transition"
               >
-                📸 Ambil/Pilih Foto
+                Pilih Foto Bukti
               </label>
 
               {previewImage && (
@@ -242,7 +242,7 @@ export default function ComplaintsClient({ initialComplaints }: { initialComplai
                   <div>
                     <h3 className="font-bold text-slate-800 text-base">{c.title}</h3>
                     <div className="text-[11px] text-slate-400 font-semibold mt-1">
-                      📅 {new Date(c.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })} · 📍 {c.location}
+                      {new Date(c.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })} · Lokasi: {c.location}
                     </div>
                   </div>
                   <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold border ${statusConfig.bg}`}>

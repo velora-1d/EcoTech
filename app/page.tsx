@@ -2,8 +2,10 @@ import Link from "next/link";
 import { desc, eq, and, gte, sum } from "drizzle-orm";
 import { db } from "@/db";
 import { disposals, users, redemptions } from "@/db/schema";
-import { getSession } from "@/lib/session";
+import { getSession, destroySession } from "@/lib/session";
 import { ensureInitialSeeds } from "@/app/actions";
+import { LeafIcon } from "@/components/icons";
+import { redirect } from "next/navigation";
 
 // Tips ramah lingkungan dinamis
 const ECO_TIPS = [
@@ -87,8 +89,8 @@ export default async function HomePage() {
 
           <div className="relative grid gap-10 lg:grid-cols-[1.2fr_0.8fr] items-center">
             <div className="text-center lg:text-left">
-              <span className="inline-flex items-center rounded-full bg-leaf-100 px-3.5 py-1 text-xs font-bold text-leaf-700 uppercase tracking-wider">
-                🌿 Gerakan Hidup Minim Sampah
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-leaf-100 px-3.5 py-1 text-xs font-bold text-leaf-700 uppercase tracking-wider">
+                <LeafIcon size={12} className="text-leaf-600" /> Gerakan Hidup Minim Sampah
               </span>
               <h1 className="font-display text-4xl font-black tracking-tight text-leaf-950 sm:text-6xl mt-4 leading-tight">
                 Ubah Sampah Menjadi <span className="text-leaf-600">Poin Hadiah</span>
@@ -152,7 +154,10 @@ export default async function HomePage() {
   }
 
   const dashboardData = await getUserDashboardData(session.userId);
-  if (!dashboardData) return null;
+  if (!dashboardData || !dashboardData.user) {
+    await destroySession();
+    redirect("/login?error=Sesi+Anda+tidak+valid+atau+telah+dihapus.");
+  }
 
   const { user, recentSetoran, recentRedeem, weeklyStats } = dashboardData;
 
@@ -188,11 +193,11 @@ export default async function HomePage() {
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
       <section className="rounded-[2rem] border border-emerald-900/10 bg-white p-6 shadow-xl shadow-emerald-900/5 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-leaf-100 text-2xl">
-            🌱
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-leaf-100 text-leaf-700">
+            <LeafIcon size={28} />
           </div>
           <div>
-            <h1 className="font-display text-2xl font-black text-leaf-950">Halo, {user.name}!</h1>
+            <h1 className="font-display text-2xl font-black text-leaf-955">Halo, {user.name}!</h1>
             <div className="flex gap-2 items-center mt-1">
               <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold border uppercase tracking-wider ${levelColor}`}>
                 {userLevel}
@@ -204,14 +209,14 @@ export default async function HomePage() {
 
         <div className="flex items-center gap-4">
           <div className="bg-leaf-50 border border-leaf-100 px-6 py-2.5 rounded-2xl text-center">
-            <div className="text-2xl font-black text-leaf-950">{user.points}</div>
+            <div className="text-2xl font-black text-leaf-955">{user.points}</div>
             <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Saldo Poin</div>
           </div>
           <Link
             href="/disposal"
-            className="rounded-2xl bg-leaf-700 hover:bg-leaf-950 px-5 py-3 text-sm font-black text-white shadow-md shadow-leaf-700/10 transition active:scale-95"
+            className="flex items-center gap-2 rounded-2xl bg-leaf-700 hover:bg-leaf-950 px-5 py-3 text-sm font-black text-white shadow-md shadow-leaf-700/10 transition active:scale-95"
           >
-            🤖 Mulai Scan AI
+            Mulai Pindai AI
           </Link>
         </div>
       </section>
@@ -219,7 +224,7 @@ export default async function HomePage() {
       <div className="grid gap-6 md:grid-cols-2">
         <div className="rounded-[2rem] border border-emerald-900/10 bg-white p-6 shadow-xl shadow-emerald-900/5 md:p-8 flex flex-col justify-between">
           <div>
-            <span className="text-xs font-bold text-leaf-700 uppercase tracking-widest">Tip Hari Ini 💡</span>
+            <span className="text-xs font-bold text-leaf-700 uppercase tracking-widest">Tip Hari Ini</span>
             <p className="mt-3 text-base leading-relaxed text-slate-700 font-medium">
               &quot;{randomTip}&quot;
             </p>

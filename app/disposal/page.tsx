@@ -1,6 +1,8 @@
 import { db } from "@/db";
 import { trashGuides } from "@/db/schema";
 import { ensureInitialSeeds } from "@/app/actions";
+import { redirect } from "next/navigation";
+import { getSession } from "@/lib/session";
 import DisposalClient from "./disposal-client";
 
 async function getGuides() {
@@ -11,6 +13,11 @@ async function getGuides() {
 }
 
 export default async function DisposalPage() {
+  const session = await getSession();
+  if (!session || session.userId === "env-admin") {
+    redirect("/login?error=Anda+harus+masuk+terlebih+dahulu+untuk+mengakses+kamera+AI+pemilah+sampah.");
+  }
+
   const guides = await getGuides();
 
   const formattedGuides = guides.map((g) => ({
