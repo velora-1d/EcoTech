@@ -237,24 +237,26 @@ export default async function HomePage() {
 
         <div className="rounded-[2rem] border border-emerald-900/10 bg-white p-6 shadow-xl shadow-emerald-900/5 md:p-8">
           <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Tren Pemilahan 7 Hari Terakhir</h3>
-          <div className="mt-6 h-36 w-full flex items-end justify-between gap-2 px-2">
-            {dailyCounts.map((countVal, i) => {
-              const pct = (countVal / maxCount) * 100;
-              const dateObj = new Date(last7Days[i]);
-              const label = dateObj.toLocaleDateString("id-ID", { weekday: "narrow" });
-              return (
-                <div key={last7Days[i]} className="flex-1 flex flex-col items-center gap-2 group relative">
-                  <span className="absolute -top-7 scale-0 group-hover:scale-100 transition-all rounded bg-slate-800 px-2 py-0.5 text-[10px] font-bold text-white whitespace-nowrap shadow-md">
-                    {countVal} item
-                  </span>
-                  <div
-                    className="w-full rounded-t-lg bg-leaf-100 group-hover:bg-leaf-700 transition"
-                    style={{ height: `${Math.max(pct, 5)}%` }}
-                  />
-                  <span className="text-[10px] font-bold text-slate-400 uppercase">{label}</span>
-                </div>
-              );
-            })}
+          <div className="overflow-x-auto scrollbar-none py-2">
+            <div className="mt-6 h-36 min-w-[340px] flex items-end justify-between gap-3 px-2">
+              {dailyCounts.map((countVal, i) => {
+                const pct = (countVal / maxCount) * 100;
+                const dateObj = new Date(last7Days[i]);
+                const label = dateObj.toLocaleDateString("id-ID", { weekday: "narrow" });
+                return (
+                  <div key={last7Days[i]} className="flex-1 flex flex-col items-center gap-2 group relative">
+                    <span className="absolute -top-7 scale-0 group-hover:scale-100 transition-all rounded bg-slate-800 px-2 py-0.5 text-[10px] font-bold text-white whitespace-nowrap shadow-md">
+                      {countVal} item
+                    </span>
+                    <div
+                      className="w-full rounded-t-lg bg-leaf-100 group-hover:bg-leaf-700 transition"
+                      style={{ height: `${Math.max(pct, 5)}%` }}
+                    />
+                    <span className="text-[10px] font-bold text-slate-400 uppercase">{label}</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

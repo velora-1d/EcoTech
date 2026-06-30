@@ -144,7 +144,7 @@ export default function DisposalClient({ guides }: { guides: GuideData[] }) {
         </p>
 
         {/* Viewport Video */}
-        <div className="relative mt-6 aspect-[4/3] overflow-hidden rounded-[1.5rem] bg-slate-900 shadow-inner">
+        <div className="relative mt-6 aspect-[3/4] sm:aspect-video overflow-hidden rounded-[1.5rem] bg-slate-900 shadow-inner">
           <video
             ref={videoRef}
             autoPlay

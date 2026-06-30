@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { getSession } from "@/lib/session";
 import { logout } from "@/app/actions";
-import { LeafIcon } from "@/components/icons";
+import Navbar from "@/components/navbar";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,76 +17,7 @@ export default async function RootLayout({
   return (
     <html lang="id">
       <body className="font-body antialiased">
-        <header className="sticky top-0 z-50 border-b border-emerald-900/10 bg-white/80 backdrop-blur">
-          <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-            <Link href="/" className="font-display text-xl font-black text-leaf-950 flex items-center gap-1.5">
-              <LeafIcon className="text-leaf-700" size={24} /> Eco Tech
-            </Link>
-
-            <div className="flex flex-1 items-center justify-center px-2 sm:justify-end">
-              <div className="flex items-center gap-1 overflow-x-auto max-w-[70vw] sm:max-w-none flex-nowrap scrollbar-none py-1">
-                <Link href="/" className="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-955">
-                  Beranda
-                </Link>
-                <Link href="/disposal" className="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-955">
-                  Kamera AI
-                </Link>
-                <Link href="/rewards" className="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-955">
-                  Hadiah
-                </Link>
-                <Link href="/panduan" className="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-955">
-                  Panduan
-                </Link>
-                <Link href="/leaderboard" className="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-955">
-                  Papan Peringkat
-                </Link>
-                <Link href="/pengaduan" className="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-955">
-                  Pengaduan
-                </Link>
-                {session && session.userId !== "env-admin" && (
-                  <Link href="/profile" className="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-955 sm:hidden">
-                    Profil
-                  </Link>
-                )}
-                {session?.role === "admin" && (
-                  <Link href="/admin" className="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold text-leaf-700 hover:bg-leaf-50">
-                    Admin
-                  </Link>
-                )}
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              {session ? (
-                <>
-                  {session.userId !== "env-admin" && (
-                    <Link href="/profile" className="hidden text-sm font-semibold text-slate-700 hover:text-leaf-700 sm:block">
-                      {session.name}
-                    </Link>
-                  )}
-                  {session.userId === "env-admin" && (
-                    <span className="hidden text-sm font-semibold text-slate-700 sm:block">{session.name}</span>
-                  )}
-                  <form action={logout}>
-                    <button
-                      type="submit"
-                      className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50"
-                    >
-                      Keluar
-                    </button>
-                  </form>
-                </>
-              ) : (
-                <Link
-                  href="/login"
-                  className="rounded-xl bg-leaf-700 px-4 py-2 text-sm font-bold text-white hover:bg-leaf-950"
-                >
-                  Masuk
-                </Link>
-              )}
-            </div>
-          </nav>
-        </header>
+        <Navbar session={session} onLogout={logout} />
         {children}
       </body>
     </html>
