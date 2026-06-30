@@ -44,6 +44,14 @@ Aplikasi pengelolaan sampah berbasis poin. Pengguna mencatat disposal berdasarka
 Aplikasi aktif Next.js Fullstack berada langsung di root project. Folder legacy `frontend/`, `backend/`, `ecotech/`, serta folder Python `camera_ai/` telah dihapus sepenuhnya untuk menjaga kerapian struktur proyek monorepo murni Next.js Fullstack.
 
 ## Progress Terakhir
+2026-06-30 (Optimasi Load Data, Navigasi, dan Cache Publik):
+- Menambahkan cache data publik berbasis tag untuk statistik guest, katalog reward, dan panduan sampah agar navigasi antar menu tidak selalu mengulang query database yang sama.
+- Menggabungkan query statistik guest Beranda dari dua query agregasi menjadi satu query agregasi.
+- Memindahkan data seed awal reward/panduan ke `lib/seed-data.ts` agar bisa dipakai ulang tanpa duplikasi.
+- Menambahkan route GET lokal `/api/regions/*` dengan cache 30 hari untuk data wilayah Indonesia sehingga form registrasi tidak langsung memukul EMSifa dari browser setiap load.
+- Menambahkan invalidasi cache via `revalidateTag` saat admin mengubah reward/panduan atau status disposal.
+- Build Next.js produksi sukses.
+
 2026-06-30 (Pembersihan Modul Legacy Python & Penyempurnaan Dropdown Berjenjang Indonesia):
 - Menghapus folder legacy `camera_ai/` yang berisi kode Python (`main.py`) agar proyek bersih 100% menggunakan arsitektur monorepo murni Next.js Fullstack.
 - Menambahkan dropdown select wilayah Indonesia berjenjang (Provinsi -> Kabupaten/Kota -> Kecamatan -> Desa/Kelurahan) yang dinamis via EMSifa API di formulir pendaftaran.
@@ -59,6 +67,5 @@ Aplikasi aktif Next.js Fullstack berada langsung di root project. Folder legacy 
 
 ## Last Updated
 2026-06-30
-
 
 

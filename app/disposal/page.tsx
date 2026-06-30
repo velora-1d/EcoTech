@@ -1,16 +1,7 @@
-import { db } from "@/db";
-import { trashGuides } from "@/db/schema";
-import { ensureInitialSeeds } from "@/app/actions";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/session";
+import { getCachedTrashGuides } from "@/lib/public-data";
 import DisposalClient from "./disposal-client";
-
-async function getGuides() {
-  if (!db) return [];
-  // Pastikan seed awal ada
-  await ensureInitialSeeds();
-  return await db.select().from(trashGuides);
-}
 
 export default async function DisposalPage() {
   const session = await getSession();
@@ -18,7 +9,7 @@ export default async function DisposalPage() {
     redirect("/login?error=Anda+harus+masuk+terlebih+dahulu+untuk+mengakses+kamera+AI+pemilah+sampah.");
   }
 
-  const guides = await getGuides();
+  const guides = await getCachedTrashGuides();
 
   const formattedGuides = guides.map((g) => ({
     id: g.id,

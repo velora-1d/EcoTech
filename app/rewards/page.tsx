@@ -1,23 +1,23 @@
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
-import { redemptions, rewards, users, trashGuides } from "@/db/schema";
+import { redemptions, users } from "@/db/schema";
 import { getSession } from "@/lib/session";
-import { seedRewards, redeemReward } from "@/app/actions";
+import { redeemReward } from "@/app/actions";
+import { getCachedRewards, getCachedTrashGuides } from "@/lib/public-data";
 import Link from "next/link";
 
 async function getPageData(userId?: string) {
   if (!db) return { rewardList: [], userPoints: 0, redeemedIds: new Set<string>(), guidesList: [] };
-  await seedRewards();
 
   const [rewardList, userRow, userRedemptions, guidesList] = await Promise.all([
-    db.select().from(rewards).orderBy(rewards.cost),
+    getCachedRewards(),
     userId
       ? db.select({ points: users.points }).from(users).where(eq(users.id, userId)).limit(1)
       : Promise.resolve([]),
     userId
       ? db.select({ rewardId: redemptions.rewardId }).from(redemptions).where(eq(redemptions.userId, userId))
       : Promise.resolve([]),
-    db.select().from(trashGuides).orderBy(trashGuides.pointsPerItem)
+    getCachedTrashGuides()
   ]);
 
   return {

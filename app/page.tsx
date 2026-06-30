@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { desc, eq, and, gte, sum } from "drizzle-orm";
+import { desc, eq, and, gte } from "drizzle-orm";
 import { db } from "@/db";
 import { disposals, users, redemptions } from "@/db/schema";
 import { getSession, destroySession } from "@/lib/session";
-import { ensureInitialSeeds } from "@/app/actions";
+import { getCachedGuestStats } from "@/lib/public-data";
 import { LeafIcon } from "@/components/icons";
 import { redirect } from "next/navigation";
 
@@ -16,20 +16,6 @@ const ECO_TIPS = [
   "Satu botol plastik memerlukan waktu hingga 450 tahun untuk terurai di alam liar.",
   "Pastikan baterai dan limbah elektronik dipisahkan karena mengandung zat kimia berbahaya (B3)."
 ];
-
-async function getGuestStats() {
-  if (!db) return { totalVerifiedItems: 0, totalPointsEarned: 0 };
-  
-  const [[itemRow], [ptRow]] = await Promise.all([
-    db.select({ total: sum(disposals.itemCount) }).from(disposals).where(eq(disposals.status, "approved")),
-    db.select({ total: sum(disposals.pointsEarned) }).from(disposals).where(eq(disposals.status, "approved"))
-  ]);
-
-  return {
-    totalVerifiedItems: Number(itemRow?.total ?? 0),
-    totalPointsEarned: Number(ptRow?.total ?? 0)
-  };
-}
 
 async function getUserDashboardData(userId: string) {
   if (!db) return null;
@@ -75,11 +61,9 @@ async function getUserDashboardData(userId: string) {
 
 export default async function HomePage() {
   const session = await getSession();
-  
-  await ensureInitialSeeds();
 
   if (!session || session.userId === "env-admin") {
-    const stats = await getGuestStats();
+    const stats = await getCachedGuestStats();
 
     return (
       <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-16 px-4 py-12 sm:px-6 lg:px-8">

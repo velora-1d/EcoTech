@@ -1,7 +1,7 @@
 "use server";
 
 import { eq, sql, desc, count, and } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
 import { disposals, redemptions, rewards, users, trashGuides, complaints } from "@/db/schema";
@@ -10,25 +10,11 @@ import { disposalSchema } from "@/lib/validations/disposal";
 import { hashPassword, verifyPassword } from "@/lib/password";
 import { createSession, destroySession, getSession } from "@/lib/session";
 import { uploadFileToS3 } from "@/lib/upload";
+import { SEED_GUIDES, SEED_REWARDS } from "@/lib/seed-data";
 
 // ============================================================
 // SEED DATA Awal (Rewards & Panduan Sampah)
 // ============================================================
-
-const SEED_REWARDS = [
-  { title: "Eco Tech Sticker Pack", provider: "Eco Tech", description: "Stiker eksklusif bertema gerakan ramah lingkungan.", cost: 50, stock: 100, category: "goods" },
-  { title: "Voucher Belanja Hijau Rp50.000", provider: "Eco Mart", description: "Diskon produk organik ramah lingkungan di Eco Mart.", cost: 250, stock: 20, category: "voucher" },
-  { title: "Bibit Pohon Mangga Harum Manis", provider: "Green Nursery", description: "Bibit pohon siap tanam untuk pekarangan Anda.", cost: 400, stock: 15, category: "seed" },
-  { title: "Akses Premium Kelas Edukasi 1 Bulan", provider: "Eco Academy", description: "Kursus online komprehensif zero waste living.", cost: 600, stock: 50, category: "voucher" },
-];
-
-const SEED_GUIDES = [
-  { categoryKey: "organic", title: "Organik", pointsPerItem: 20, basePoints: 5, instruction: "Pisahkan sisa makanan, kulit buah, atau dedaunan. Pastikan sisa cairan ditiriskan terlebih dahulu sebelum disetor." },
-  { categoryKey: "plastic", title: "Plastik", pointsPerItem: 40, basePoints: 10, instruction: "Bilas botol/gelas plastik dari sisa minuman, lepaskan tutup botol dan label, lalu remas hingga pipih." },
-  { categoryKey: "paper", title: "Kertas & Kardus", pointsPerItem: 25, basePoints: 5, instruction: "Pastikan kertas kering, tidak berminyak, dan tidak basah. Lipat atau pipihkan kardus agar rapi." },
-  { categoryKey: "metal", title: "Metal / Kaleng", pointsPerItem: 50, basePoints: 10, instruction: "Bilas kaleng aluminium atau kaleng makanan, hilangkan sisa label jika memungkinkan, lalu pipihkan." },
-  { categoryKey: "fabric", title: "Kain / Tekstil", pointsPerItem: 30, basePoints: 5, instruction: "Pastikan pakaian bekas, sprei, atau sisa kain dalam keadaan bersih dan kering." },
-];
 
 export async function seedRewards() {
   if (!db) return;
@@ -449,6 +435,7 @@ export async function redeemReward(rewardId: string) {
 
   revalidatePath("/rewards");
   revalidatePath("/profile");
+  revalidateTag("rewards");
   redirect("/profile");
 }
 
@@ -481,6 +468,7 @@ export async function approveDisposal(disposalId: string) {
   revalidatePath("/admin");
   revalidatePath("/");
   revalidatePath("/profile");
+  revalidateTag("guest-stats");
 }
 
 export async function rejectDisposal(disposalId: string) {
@@ -495,6 +483,7 @@ export async function rejectDisposal(disposalId: string) {
   revalidatePath("/admin");
   revalidatePath("/");
   revalidatePath("/profile");
+  revalidateTag("guest-stats");
 }
 
 export async function completeRedemption(redemptionId: string) {
@@ -531,6 +520,7 @@ export async function addReward(formData: FormData) {
   await db.insert(rewards).values({ title, provider, description, cost, stock, category });
   revalidatePath("/admin");
   revalidatePath("/rewards");
+  revalidateTag("rewards");
 }
 
 export async function updateReward(id: string, formData: FormData) {
@@ -553,6 +543,7 @@ export async function updateReward(id: string, formData: FormData) {
 
   revalidatePath("/admin");
   revalidatePath("/rewards");
+  revalidateTag("rewards");
 }
 
 export async function deleteReward(id: string) {
@@ -565,6 +556,7 @@ export async function deleteReward(id: string) {
   await db.delete(rewards).where(eq(rewards.id, id));
   revalidatePath("/admin");
   revalidatePath("/rewards");
+  revalidateTag("rewards");
 }
 
 // ============================================================
@@ -588,6 +580,7 @@ export async function addGuide(formData: FormData) {
   revalidatePath("/admin");
   revalidatePath("/panduan");
   revalidatePath("/disposal");
+  revalidateTag("trash-guides");
 }
 
 export async function updateGuide(id: string, formData: FormData) {
@@ -609,6 +602,7 @@ export async function updateGuide(id: string, formData: FormData) {
   revalidatePath("/admin");
   revalidatePath("/panduan");
   revalidatePath("/disposal");
+  revalidateTag("trash-guides");
 }
 
 export async function deleteGuide(id: string) {
@@ -620,6 +614,7 @@ export async function deleteGuide(id: string) {
   revalidatePath("/admin");
   revalidatePath("/panduan");
   revalidatePath("/disposal");
+  revalidateTag("trash-guides");
 }
 
 // ============================================================
@@ -779,5 +774,4 @@ export async function getRegionalLeaderboard(level: "province" | "regency" | "di
     userCount: Number(r.userCount ?? 0)
   }));
 }
-
 

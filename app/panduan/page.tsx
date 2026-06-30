@@ -1,16 +1,7 @@
-import { db } from "@/db";
-import { trashGuides } from "@/db/schema";
-import { ensureInitialSeeds } from "@/app/actions";
-
-async function getGuides() {
-  if (!db) return [];
-  // Pastikan seed awal ada
-  await ensureInitialSeeds();
-  return await db.select().from(trashGuides);
-}
+import { getCachedTrashGuides } from "@/lib/public-data";
 
 export default async function PanduanPage() {
-  const guides = await getGuides();
+  const guides = await getCachedTrashGuides();
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-5xl px-4 py-8 sm:px-6 lg:px-8">

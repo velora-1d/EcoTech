@@ -21,7 +21,7 @@ export default function RegisterForm({ error }: { error?: string }) {
 
   // Ambil data Provinsi Indonesia saat komponen dimuat
   useEffect(() => {
-    fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
+    fetch("/api/regions/provinces")
       .then((res) => res.json())
       .then((data) => setProvinces(data))
       .catch((err) => console.error("Gagal memuat provinsi:", err));
@@ -41,7 +41,7 @@ export default function RegisterForm({ error }: { error?: string }) {
 
     setLoadingReg(true);
     try {
-      const res = await fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provId}.json`);
+      const res = await fetch(`/api/regions/regencies/${provId}`);
       const data = await res.json();
       setRegencies(data);
     } catch (err) {
@@ -63,7 +63,7 @@ export default function RegisterForm({ error }: { error?: string }) {
 
     setLoadingDist(true);
     try {
-      const res = await fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${regId}.json`);
+      const res = await fetch(`/api/regions/districts/${regId}`);
       const data = await res.json();
       setDistricts(data);
     } catch (err) {
@@ -84,7 +84,7 @@ export default function RegisterForm({ error }: { error?: string }) {
 
     setLoadingVill(true);
     try {
-      const res = await fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${distId}.json`);
+      const res = await fetch(`/api/regions/villages/${distId}`);
       const data = await res.json();
       setVillages(data);
     } catch (err) {
