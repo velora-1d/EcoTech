@@ -95,8 +95,8 @@ export default function RegisterForm({ error }: { error?: string }) {
   }
 
   return (
-    <div className="rounded-[2rem] border border-emerald-900/10 bg-white/90 p-8 shadow-2xl shadow-emerald-900/10 backdrop-blur">
-      <h1 className="font-display text-3xl font-black text-leaf-950">Daftar</h1>
+    <div className="rounded-[2rem] border border-emerald-900/10 bg-white/90 p-6 sm:p-8 shadow-2xl shadow-emerald-900/10 backdrop-blur">
+      <h1 className="font-display text-3xl font-black text-leaf-955">Daftar</h1>
       <p className="mt-1 text-sm text-slate-500">Bergabung dan mulai kumpulkan poin hijau.</p>
 
       {error && (

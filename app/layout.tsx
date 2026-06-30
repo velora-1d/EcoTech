@@ -24,35 +24,37 @@ export default async function RootLayout({
               <LeafIcon className="text-leaf-700" size={24} /> Eco Tech
             </Link>
 
-            <div className="flex items-center gap-1">
-              <Link href="/" className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-950">
-                Beranda
-              </Link>
-              <Link href="/disposal" className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-950">
-                Kamera AI
-              </Link>
-              <Link href="/rewards" className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-950">
-                Hadiah
-              </Link>
-              <Link href="/panduan" className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-950">
-                Panduan
-              </Link>
-              <Link href="/leaderboard" className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-950">
-                Papan Peringkat
-              </Link>
-              <Link href="/pengaduan" className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-950">
-                Pengaduan
-              </Link>
-              {session && session.userId !== "env-admin" && (
-                <Link href="/profile" className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-950 sm:hidden">
-                  Profil
+            <div className="flex flex-1 items-center justify-center px-2 sm:justify-end">
+              <div className="flex items-center gap-1 overflow-x-auto max-w-[70vw] sm:max-w-none flex-nowrap scrollbar-none py-1">
+                <Link href="/" className="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-955">
+                  Beranda
                 </Link>
-              )}
-              {session?.role === "admin" && (
-                <Link href="/admin" className="rounded-xl px-3 py-2 text-sm font-semibold text-leaf-700 hover:bg-leaf-50">
-                  Admin
+                <Link href="/disposal" className="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-955">
+                  Kamera AI
                 </Link>
-              )}
+                <Link href="/rewards" className="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-955">
+                  Hadiah
+                </Link>
+                <Link href="/panduan" className="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-955">
+                  Panduan
+                </Link>
+                <Link href="/leaderboard" className="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-955">
+                  Papan Peringkat
+                </Link>
+                <Link href="/pengaduan" className="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-955">
+                  Pengaduan
+                </Link>
+                {session && session.userId !== "env-admin" && (
+                  <Link href="/profile" className="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-955 sm:hidden">
+                    Profil
+                  </Link>
+                )}
+                {session?.role === "admin" && (
+                  <Link href="/admin" className="shrink-0 rounded-xl px-3 py-2 text-sm font-semibold text-leaf-700 hover:bg-leaf-50">
+                    Admin
+                  </Link>
+                )}
+              </div>
             </div>
 
             <div className="flex items-center gap-2">
