@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { LeafIcon } from "@/components/icons";
 
 import { backToAdmin } from "@/app/actions";
@@ -21,6 +22,7 @@ type NavbarProps = {
 
 export default function Navbar({ session, onLogout }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   const menuItems = [
     { label: "Beranda", href: "/" },
@@ -41,19 +43,30 @@ export default function Navbar({ session, onLogout }: NavbarProps) {
 
         {/* Desktop Navigation Links */}
         <div className="hidden md:flex items-center gap-1">
-          {menuItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-955 transition"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {menuItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${
+                  isActive
+                    ? "bg-leaf-100 text-leaf-955 font-bold"
+                    : "text-slate-600 hover:bg-leaf-50 hover:text-leaf-955"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
           {session && session.userId !== "env-admin" && (
             <Link
               href="/profile"
-              className="rounded-xl px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-leaf-50 hover:text-leaf-955 transition"
+              className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${
+                pathname === "/profile"
+                  ? "bg-leaf-100 text-leaf-955 font-bold"
+                  : "text-slate-600 hover:bg-leaf-50 hover:text-leaf-955"
+              }`}
             >
               Profil
             </Link>
@@ -124,23 +137,46 @@ export default function Navbar({ session, onLogout }: NavbarProps) {
 
           {/* Drawer Content */}
           <div className="fixed inset-x-4 top-16 z-50 rounded-[2rem] border border-emerald-900/10 bg-white p-6 shadow-2xl transition-all md:hidden animate-in slide-in-from-top-4 duration-200">
+            <div className="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Navigasi Menu</span>
+              <button 
+                onClick={() => setIsOpen(false)}
+                className="p-1 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-650 transition"
+                aria-label="Tutup Menu"
+              >
+                <svg className="h-5 w-5 fill-none stroke-current" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
             <nav className="flex flex-col gap-2">
-              {menuItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setIsOpen(false)}
-                  className="rounded-2xl px-4 py-3.5 text-base font-bold text-slate-700 hover:bg-leaf-50 hover:text-leaf-955 transition"
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {menuItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`rounded-2xl px-4 py-3.5 text-base font-bold transition ${
+                      isActive
+                        ? "bg-leaf-100 text-leaf-955 font-black"
+                        : "text-slate-700 hover:bg-leaf-50 hover:text-leaf-955"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
 
               {session && session.userId !== "env-admin" && (
                 <Link
                   href="/profile"
                   onClick={() => setIsOpen(false)}
-                  className="rounded-2xl px-4 py-3.5 text-base font-bold text-slate-700 hover:bg-leaf-50 hover:text-leaf-955 transition"
+                  className={`rounded-2xl px-4 py-3.5 text-base font-bold transition ${
+                    pathname === "/profile"
+                      ? "bg-leaf-100 text-leaf-955 font-black"
+                      : "text-slate-700 hover:bg-leaf-50 hover:text-leaf-955"
+                  }`}
                 >
                   Profil Saya
                 </Link>

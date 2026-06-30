@@ -77,8 +77,8 @@ export default async function ProfilePage() {
               <LeafIcon size={32} />
             </div>
             <div>
-              <h1 className="font-display text-2xl font-black text-leaf-955">{session.name}</h1>
-              <p className="text-sm text-slate-500">{session.email}</p>
+              <h1 className="font-display text-2xl font-black text-leaf-955">{data?.user?.name ?? session.name}</h1>
+              <p className="text-sm text-slate-500">{data?.user?.email ?? session.email}</p>
               {data?.user?.createdAt && (
                 <p className="mt-1 text-xs text-slate-400">
                   Bergabung {new Date(data.user.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}

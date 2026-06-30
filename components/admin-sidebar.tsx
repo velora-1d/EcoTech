@@ -144,7 +144,7 @@ export default function AdminSidebar({ session, currentTab, onLogout, onSimulate
                 href="/"
                 className="flex items-center justify-center rounded-xl bg-slate-800 hover:bg-slate-750 py-2 text-center text-[10px] font-bold text-slate-300 transition"
               >
-                Lihat Web (Admin)
+                Lihat Web Utama
               </Link>
               <button
                 onClick={() => onLogout()}
