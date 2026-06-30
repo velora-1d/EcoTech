@@ -24,6 +24,8 @@ Thumbs.db
 # build
 dist/
 build/
+.next/
+out/
 
 # database
 *.sqlite

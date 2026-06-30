@@ -1,0 +1,33 @@
+{
+  "name": "ecotech",
+  "description": "Aplikasi pengelolaan sampah berbasis poin dan reward.",
+  "version": "1.0.0",
+  "lastUpdated": "2026-06-30",
+  "stack": {
+    "frontend": "next.js",
+    "backend": "next.js-fullstack",
+    "database": "postgresql",
+    "orm": "drizzle",
+    "auth": null,
+    "realtime": null,
+    "mobile": null
+  },
+  "mode": "fullstack",
+  "platform": ["web"],
+  "multiTenant": false,
+  "tenantStrategy": null,
+  "scale": "small",
+  "team": "solo",
+  "hosting": {
+    "development": "local",
+    "staging": "vercel-preview",
+    "production": "vercel"
+  },
+  "infraBudget": "free-tier",
+  "activeRules": [
+    "nextjs-fullstack",
+    "postgresql",
+    "drizzle-orm"
+  ],
+  "notes": "Root project adalah aplikasi Next.js aktif. Folder frontend/backend/ecotech masih legacy."
+}
