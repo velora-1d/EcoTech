@@ -11,7 +11,8 @@ import {
   UserIcon,
   TrophyIcon,
   SettingsIcon,
-  GiftIcon
+  GiftIcon,
+  BookOpenIcon
 } from "@/components/icons";
 
 type SessionData = {
@@ -40,7 +41,8 @@ export default function AdminSidebar({ session, currentTab, onLogout, onSimulate
     { label: "Kelola Hadiah", tab: "rewards", icon: GiftIcon },
     { label: "Kelola Panduan & Poin", tab: "guides", icon: SettingsIcon },
     { label: "Papan Peringkat Admin", tab: "leaderboard", icon: TrophyIcon },
-    { label: "Kelola Pengguna", tab: "users", icon: UserIcon }
+    { label: "Kelola Pengguna", tab: "users", icon: UserIcon },
+    { label: "Dokumentasi Fitur", tab: "docs", icon: BookOpenIcon }
   ];
 
   return (

@@ -15,7 +15,8 @@ import {
   UserIcon,
   TrophyIcon,
   SettingsIcon,
-  GiftIcon
+  GiftIcon,
+  BookOpenIcon
 } from "@/components/icons";
 import {
   approveDisposal,
@@ -415,7 +416,8 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
     { label: "Kelola Hadiah", tab: "rewards", icon: GiftIcon },
     { label: "Kelola Panduan & Poin", tab: "guides", icon: SettingsIcon },
     { label: "Papan Peringkat Admin", tab: "leaderboard", icon: TrophyIcon },
-    { label: "Kelola Pengguna", tab: "users", icon: UserIcon }
+    { label: "Kelola Pengguna", tab: "users", icon: UserIcon },
+    { label: "Dokumentasi Fitur", tab: "docs", icon: BookOpenIcon }
   ];
 
   return (
@@ -1657,6 +1659,258 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
                   </tbody>
                 </table>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 10: DOKUMENTASI FITUR */}
+        {currentTab === "docs" && (
+          <div className="space-y-8 print:hidden">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-200 pb-5">
+              <div>
+                <h1 className="font-display text-3xl font-black text-slate-800 flex items-center gap-2">
+                  <BookOpenIcon className="text-leaf-700" size={28} /> Dokumentasi & Panduan Fitur
+                </h1>
+                <p className="mt-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  Eco Tech Operational & Flow Guide
+                </p>
+              </div>
+            </div>
+
+            {/* Layout Utama: Navigasi Daftar Isi Sticky & Konten Kaca */}
+            <div className="grid gap-8 md:grid-cols-[240px_1fr]">
+              
+              {/* Sidebar Daftar Isi (Sticky) */}
+              <div className="relative print:hidden">
+                <div className="sticky top-24 space-y-4 rounded-3xl border border-slate-100 bg-white p-5 shadow-xl shadow-slate-900/5">
+                  <h3 className="font-display text-xs font-black text-slate-800 uppercase tracking-wider pb-3 border-b border-slate-100">
+                    Daftar Isi
+                  </h3>
+                  <nav className="flex flex-col space-y-2">
+                    {[
+                      { label: "Prinsip Utama", id: "prinsip" },
+                      { label: "Fitur Warga", id: "warga" },
+                      { label: "Kamera AI", id: "kamera-ai" },
+                      { label: "Katalog Hadiah", id: "rewards" },
+                      { label: "Papan Peringkat", id: "leaderboard" },
+                      { label: "Pengaduan Laporan", id: "pengaduan" },
+                      { label: "Profil & Barcode", id: "profil" },
+                      { label: "Portal Pengelola", id: "admin-portal" },
+                      { label: "Verifikasi Setoran", id: "verif-setoran" },
+                      { label: "Laporan & Ekspor", id: "laporan-kpi" },
+                      { label: "Kontrol & Blokir", id: "kontrol-user" }
+                    ].map((item) => (
+                      <a
+                        key={item.id}
+                        href={`#${item.id}`}
+                        className="text-xs font-bold text-slate-500 hover:text-leaf-700 transition flex items-center gap-1.5 py-1"
+                      >
+                        <span className="h-1.5 w-1.5 rounded-full bg-slate-300"></span>
+                        {item.label}
+                      </a>
+                    ))}
+                  </nav>
+                </div>
+              </div>
+
+              {/* Konten Utama Dokumentasi */}
+              <div className="space-y-10">
+                
+                {/* 1. Prinsip Utama */}
+                <section id="prinsip" className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-xl shadow-slate-900/5 md:p-8 scroll-mt-24">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-leaf-50 text-leaf-700">
+                      <LeafIcon size={20} />
+                    </div>
+                    <h2 className="font-display text-xl font-black text-slate-800">1. Prinsip Utama Layanan</h2>
+                  </div>
+                  <div className="text-sm text-slate-600 leading-relaxed space-y-3">
+                    <p>Eco Tech beroperasi dengan filosofi sederhana namun kokoh: <strong>"Setor Sampah, Kumpulkan Poin, Tukar Hadiah"</strong>.</p>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li><strong>Perhitungan Poin per Unit:</strong> Setiap sampah disetor dikelompokkan dan dihitung jumlah unitnya berdasarkan aturan tarif kategori sampah dinamis dari database.</li>
+                      <li><strong>Filter Kejujuran AI:</strong> Menghalau kecurangan penyetoran dengan algoritma pengenalan gambar di server untuk mematikan potensi eksploitasi poin.</li>
+                      <li><strong>Gotong Royong Daerah:</strong> Data kewilayahan warga dipetakan dari RT/RW hingga Provinsi untuk melahirkan kompetisi keaktifan antardaerah.</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* 2. Fitur Warga (Beranda) */}
+                <section id="warga" className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-xl shadow-slate-900/5 md:p-8 scroll-mt-24">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                      <ChartIcon size={20} />
+                    </div>
+                    <h2 className="font-display text-xl font-black text-slate-800">2. Halaman Utama Beranda Warga</h2>
+                  </div>
+                  <div className="text-sm text-slate-600 leading-relaxed space-y-3">
+                    <p>Beranda warga dikemas dengan UI premium bertema natural yang responsif:</p>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li><strong>Grafik Tren Mingguan:</strong> Visualisasi batang harian 7 hari terakhir yang dapat digeser (scrollable) di HP.</li>
+                      <li><strong>Tips Ramah Lingkungan:</strong> Banner kartu saran cara memilah sampah yang berubah otomatis setiap kali dimuat.</li>
+                      <li><strong>Tamu vs Warga:</strong> Tamu disajikan visual ajakan pendaftaran dan tombol masuk. Warga masuk langsung disajikan data saldo poin dan 4 riwayat setoran terbarunya.</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* 3. Kamera AI */}
+                <section id="kamera-ai" className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-xl shadow-slate-900/5 md:p-8 scroll-mt-24">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+                      <TrashIcon size={20} />
+                    </div>
+                    <h2 className="font-display text-xl font-black text-slate-800">3. Kamera Pemindai Cerdas (Pendeteksi AI)</h2>
+                  </div>
+                  <div className="text-sm text-slate-600 leading-relaxed space-y-3">
+                    <p>Kamera AI memproses deteksi sampah secara instan dan aman dari pemalsuan:</p>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li><strong>Kamera Tegak Mobile:</strong> Aspek rasio potret 3:4 yang pas untuk pengoperasian satu tangan.</li>
+                      <li><strong>Filter Keamanan Anti-Cheat:</strong> AI di server secara tegas membatalkan dan memunculkan banner merah jika foto berupa wajah (selfie), hewan, perabotan, barang elektronik utuh, atau ruangan bersih.</li>
+                      <li><strong>Tombol Jumbo:</strong> Tombol tambah/kurang kuantitas berukuran minimal 48px agar jempol tidak meleset saat mendaftarkan jumlah unit sampah yang diletakkan di depan depo.</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* 4. Katalog Hadiah */}
+                <section id="rewards" className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-xl shadow-slate-900/5 md:p-8 scroll-mt-24">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
+                      <GiftIcon size={20} />
+                    </div>
+                    <h2 className="font-display text-xl font-black text-slate-800">4. Katalog Penukaran Hadiah</h2>
+                  </div>
+                  <div className="text-sm text-slate-600 leading-relaxed space-y-3">
+                    <p>Menukar poin yang dikumpulkan warga dengan voucer fisik/digital secara terkendali:</p>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li><strong>Penyaringan Kategori:</strong> Pil filter kategori Voucher Belanja, Barang Daur Ulang, dan Bibit Pohon.</li>
+                      <li><strong>Validasi Saldo & Stok:</strong> Tombol otomatis terkunci menjadi *Poin Tidak Cukup* jika poin warga kurang, atau *Stok Habis* jika kuota hadiah bernilai 0 di database.</li>
+                      <li><strong>Flow Sukses:</strong> Mengurangi saldo poin warga, memotong stok gudang, menerbitkan kode unik format `ECO-XXXXXX`, dan mengarahkan ke profil.</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* 5. Papan Peringkat */}
+                <section id="leaderboard" className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-xl shadow-slate-900/5 md:p-8 scroll-mt-24">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-50 text-amber-500">
+                      <TrophyIcon size={20} />
+                    </div>
+                    <h2 className="font-display text-xl font-black text-slate-800">5. Papan Peringkat Eco Hero & Kewilayahan</h2>
+                  </div>
+                  <div className="text-sm text-slate-600 leading-relaxed space-y-3">
+                    <p>Kompetisi kebersihan terbagi menjadi dua ranah utama:</p>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li><strong>Individu (Eco Hero):</strong> Papan 10 peringkat warga teraktif. Nama disensor sebagian (seperti `Bu***i`) demi melindungi privasi publik.</li>
+                      <li><strong>Kewilayahan (Eco Region):</strong> Urutan daerah terajin (Provinsi, Kabupaten, Kecamatan, Desa, RT/RW) dengan podium visual juara 1, 2, 3 bergradasi warna medali resmi.</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* 6. Pengaduan Laporan */}
+                <section id="pengaduan" className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-xl shadow-slate-900/5 md:p-8 scroll-mt-24">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-rose-50 text-rose-600">
+                      <MegaphoneIcon size={20} />
+                    </div>
+                    <h2 className="font-display text-xl font-black text-slate-800">6. Formulir Laporan Pengaduan Lingkungan</h2>
+                  </div>
+                  <div className="text-sm text-slate-600 leading-relaxed space-y-3">
+                    <p>Menyalurkan aspirasi kebersihan warga mengenai tumpukan sampah liar langsung ke pengelola:</p>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li><strong>Input Lengkap:</strong> Pengisian judul, deskripsi kejadian, patokan lokasi spesifik, dan unggah foto bukti digital.</li>
+                      <li><strong>Status Aduan Formal:</strong> Penanda status tanpa emoji yang berganti otomatis dari *Pending* -> *Ditinjau* -> *Selesai / Ditolak* disertai kolom catatan penyelesaian dari administrator.</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* 7. Profil & Barcode */}
+                <section id="profil" className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-xl shadow-slate-900/5 md:p-8 scroll-mt-24">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-50 text-slate-700">
+                      <UserIcon size={20} />
+                    </div>
+                    <h2 className="font-display text-xl font-black text-slate-800">7. Halaman Profil Saya & Barcode Garis</h2>
+                  </div>
+                  <div className="text-sm text-slate-600 leading-relaxed space-y-3">
+                    <p>Identitas digital warga yang merangkum hasil kerja daur ulangnya:</p>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li><strong>Metrik Kunci:</strong> Tiga kotak rangkuman total poin sukses, total sampah disetor (unit), dan total voucher yang diklaim.</li>
+                      <li><strong>Penyimpanan Kupon:</strong> Menyimpan kode voucer aktif berlabel warna status penukaran.</li>
+                      <li><strong>Barcode Garis CSS:</strong> Representasi garis barcode hitam putih yang di-generate otomatis untuk dipindai oleh kasir rekanan.</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* 8. Portal Pengelola */}
+                <section id="admin-portal" className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-xl shadow-slate-900/5 md:p-8 scroll-mt-24">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-900 text-white">
+                      <SettingsIcon size={20} />
+                    </div>
+                    <h2 className="font-display text-xl font-black text-slate-800">8. Portal Pengelola & Mode Simulator</h2>
+                  </div>
+                  <div className="text-sm text-slate-600 leading-relaxed space-y-3">
+                    <p>Sisi administrator yang terisolasi dengan penegasan aspek keamanan internal:</p>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li><strong>Admin Secure Login:</strong> Halaman masuk khusus `/admin/login` bertema gelap cyber tanpa form registrasi publik.</li>
+                      <li><strong>Sidebar Hamburger Tutup (X):</strong> Drawer mobile dengan tombol silang penutup fungsional dan letak menu tertata.</li>
+                      <li><strong>Sesi Simulator:</strong> Tombol *Lihat Web (Sebagai User)* di dasar sidebar yang mengubah login admin menjadi warga tester bersaldo 500 poin untuk simulasi, dan tombol emas melayang *Kembali ke Admin* untuk kembali.</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* 9. Verifikasi Setoran */}
+                <section id="verif-setoran" className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-xl shadow-slate-900/5 md:p-8 scroll-mt-24">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+                      <TrashIcon size={20} />
+                    </div>
+                    <h2 className="font-display text-xl font-black text-slate-800">9. Verifikasi Setoran & Tindak Lanjut Laporan</h2>
+                  </div>
+                  <div className="text-sm text-slate-600 leading-relaxed space-y-3">
+                    <p>Alur verifikasi kebersihan depo dan aduan pencemaran lingkungan:</p>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li><strong>Aksi Setoran:</strong> Petugas membandingkan fisik sampah dengan foto. Tombol *Setujui* akan mengirim poin secara instan, tombol *Tolak* membatalkan setoran.</li>
+                      <li><strong>Tindak Lanjut Aduan:</strong> Review lokasi aduan, ubah status laporan (*Pending* -> *Ditinjau* -> *Selesai*), dan tulis catatan detail tindakan penyelesaian dari petugas kebersihan.</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* 10. Laporan & Ekspor */}
+                <section id="laporan-kpi" className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-xl shadow-slate-900/5 md:p-8 scroll-mt-24">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                      <ChartIcon size={20} />
+                    </div>
+                    <h2 className="font-display text-xl font-black text-slate-800">10. Laporan Kinerja & Ekspor Dokumen</h2>
+                  </div>
+                  <div className="text-sm text-slate-600 leading-relaxed space-y-3">
+                    <p>Menu ringkasan data eksekutif platform dan performa wilayah terajin:</p>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li><strong>Kartu KPI Regional:</strong> Indikasi Provinsi Teraktif, Kabupaten Teraktif, dan Kecamatan Teraktif terhitung dari sirkulasi poin.</li>
+                      <li><strong>Dokumen Ekspor XLS/DOC/PDF:</strong> Tombol unduh laporan ke format Excel, Word, atau print PDF yang merangkum data KPI sirkulasi, rekapitulasi sampah kategori, voucer terpopuler, kontributor teraktif, dan data regional teraktif.</li>
+                    </ul>
+                  </div>
+                </section>
+
+                {/* 11. Kontrol & Blokir */}
+                <section id="kontrol-user" className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-xl shadow-slate-900/5 md:p-8 scroll-mt-24">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-rose-50 text-rose-600">
+                      <UserIcon size={20} />
+                    </div>
+                    <h2 className="font-display text-xl font-black text-slate-800">11. Pengelolaan Akun & Blokir Cheat</h2>
+                  </div>
+                  <div className="text-sm text-slate-600 leading-relaxed space-y-3">
+                    <p>Keamanan database warga dan pemblokiran penyalahgunaan poin:</p>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li><strong>Edit Saldo Manual:</strong> Menyesuaikan saldo poin warga secara manual (menambah atau memotong jika ada kekeliruan verifikasi depo).</li>
+                      <li><strong>Penalti Blokir Akun:</strong> Tombol *Blokir Akun* akan langsung mengubah status warga. Efeknya, akun akan di-force logout secara instan, tidak bisa login kembali, dan namanya dieliminasi dari seluruh daftar papan peringkat publik.</li>
+                    </ul>
+                  </div>
+                </section>
+
+              </div>
+
             </div>
           </div>
         )}
