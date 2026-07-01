@@ -1,7 +1,7 @@
 "use server";
 
 import { eq, sql, desc, count, and } from "drizzle-orm";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
 import { disposals, redemptions, rewards, users, trashGuides, complaints } from "@/db/schema";
@@ -32,10 +32,14 @@ export async function seedGuides() {
   await db.insert(trashGuides).values(SEED_GUIDES);
 }
 
+let isSeeded = false;
+
 // Helper untuk menjalankan inisialisasi seed awal jika kosong
 export async function ensureInitialSeeds() {
+  if (isSeeded) return;
   await seedRewards();
   await seedGuides();
+  isSeeded = true;
 }
 
 // ============================================================
@@ -436,6 +440,7 @@ export async function redeemReward(rewardId: string) {
   revalidatePath("/rewards");
   revalidatePath("/profile");
   revalidateTag("rewards");
+  revalidateTag("leaderboard");
   redirect("/profile");
 }
 
@@ -469,6 +474,7 @@ export async function approveDisposal(disposalId: string) {
   revalidatePath("/");
   revalidatePath("/profile");
   revalidateTag("guest-stats");
+  revalidateTag("leaderboard");
 }
 
 export async function rejectDisposal(disposalId: string) {
@@ -484,6 +490,7 @@ export async function rejectDisposal(disposalId: string) {
   revalidatePath("/");
   revalidatePath("/profile");
   revalidateTag("guest-stats");
+  revalidateTag("leaderboard");
 }
 
 export async function completeRedemption(redemptionId: string) {
@@ -497,6 +504,8 @@ export async function completeRedemption(redemptionId: string) {
 
   revalidatePath("/admin");
   revalidatePath("/profile");
+  revalidatePath("/leaderboard");
+  revalidateTag("leaderboard");
 }
 
 // ============================================================
@@ -632,6 +641,8 @@ export async function updateUserPoints(userId: string, newPoints: number) {
 
   revalidatePath("/admin");
   revalidatePath("/profile");
+  revalidatePath("/leaderboard");
+  revalidateTag("leaderboard");
 }
 
 export async function toggleUserBlock(userId: string) {
@@ -647,6 +658,8 @@ export async function toggleUserBlock(userId: string) {
     .where(eq(users.id, userId));
 
   revalidatePath("/admin");
+  revalidatePath("/leaderboard");
+  revalidateTag("leaderboard");
 }
 
 // ============================================================
@@ -733,7 +746,7 @@ export async function deleteComplaint(complaintId: string) {
   revalidatePath("/pengaduan");
 }
 
-export async function getRegionalLeaderboard(level: "province" | "regency" | "district" | "village" | "hamlet") {
+const getRegionalLeaderboardCached = unstable_cache(async (level: "province" | "regency" | "district" | "village" | "hamlet") => {
   if (!db) return [];
 
   let groupColumn;
@@ -773,5 +786,8 @@ export async function getRegionalLeaderboard(level: "province" | "regency" | "di
     totalItems: Number(r.totalItems ?? 0),
     userCount: Number(r.userCount ?? 0)
   }));
-}
+}, ["regional-leaderboard"], { revalidate: 600, tags: ["leaderboard"] });
 
+export async function getRegionalLeaderboard(level: "province" | "regency" | "district" | "village" | "hamlet") {
+  return getRegionalLeaderboardCached(level);
+}

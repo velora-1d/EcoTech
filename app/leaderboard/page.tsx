@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { unstable_cache } from "next/cache";
 import { eq, ne, desc, and } from "drizzle-orm";
 import { db } from "@/db";
 import { users } from "@/db/schema";
@@ -12,7 +13,7 @@ type Props = {
   }>;
 };
 
-async function getLeaderboard() {
+const getLeaderboard = unstable_cache(async () => {
   if (!db) return [];
   return await db
     .select({
@@ -30,7 +31,7 @@ async function getLeaderboard() {
     )
     .orderBy(desc(users.points))
     .limit(10);
-}
+}, ["leaderboard-individual"], { revalidate: 600, tags: ["leaderboard"] });
 
 function maskName(name: string) {
   if (name.length <= 2) return name + "**";

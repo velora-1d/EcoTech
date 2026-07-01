@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { count, desc, eq, ne, and, sum, gte, lte, sql } from "drizzle-orm";
+import { count, desc, eq, ne, and, sum, gte, lte, sql, ilike, or, type SQL } from "drizzle-orm";
 import { db } from "@/db";
 import { disposals, rewards, users, redemptions, trashGuides, complaints } from "@/db/schema";
 import { getSession } from "@/lib/session";
@@ -46,7 +46,45 @@ type SearchParams = Promise<{
   category?: string;
   startDate?: string;
   endDate?: string;
+  page?: string;
 }>;
+
+const ADMIN_PAGE_SIZE = 15;
+
+function buildAdminHref(params: Awaited<SearchParams>, page: number) {
+  const nextParams = new URLSearchParams();
+  for (const key of ["tab", "search", "status", "category", "startDate", "endDate"] as const) {
+    const value = params[key];
+    if (value) nextParams.set(key, value);
+  }
+  if (page > 1) nextParams.set("page", String(page));
+  return `/admin?${nextParams.toString()}`;
+}
+
+function AdminPagination({ params, page, total }: { params: Awaited<SearchParams>; page: number; total: number }) {
+  const totalPages = Math.max(1, Math.ceil(total / ADMIN_PAGE_SIZE));
+  if (totalPages <= 1) return null;
+
+  return (
+    <div className="mt-4 flex items-center justify-between rounded-2xl border border-slate-100 bg-white px-4 py-3 text-xs font-bold text-slate-500 shadow-sm">
+      <span>
+        Halaman {page} dari {totalPages} · {total} data
+      </span>
+      <div className="flex gap-2">
+        {page > 1 && (
+          <Link href={buildAdminHref(params, page - 1)} className="rounded-xl border border-slate-200 px-3 py-2 text-slate-700 hover:bg-slate-50">
+            Sebelumnya
+          </Link>
+        )}
+        {page < totalPages && (
+          <Link href={buildAdminHref(params, page + 1)} className="rounded-xl bg-leaf-700 px-3 py-2 text-white hover:bg-leaf-950">
+            Berikutnya
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default async function AdminPage({ searchParams }: { searchParams: SearchParams }) {
   const session = await getSession();
@@ -63,6 +101,8 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
   const filterCategory = params.category || "";
   const startDateStr = params.startDate || "";
   const endDateStr = params.endDate || "";
+  const page = Math.max(1, Number(params.page) || 1);
+  const offset = (page - 1) * ADMIN_PAGE_SIZE;
 
   if (!db) {
     return (
@@ -97,6 +137,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
   let userList: any[] = [];
   let complaintList: any[] = [];
   let reportData: any = null;
+  let paginatedTotal = 0;
 
   if (currentTab === "stats") {
     const [[userRow], [dispRow], [rewRow], [redRow], [ptRow], [pendingDisp], [pendingRed]] = await Promise.all([
@@ -126,7 +167,19 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
       totalStatsCount: categoryStats.reduce((s, c) => s + c.count, 0) || 1
     };
   } else if (currentTab === "disposals") {
-    let list = await db
+    const filters: SQL[] = [];
+    if (filterStatus) filters.push(eq(disposals.status, filterStatus));
+    if (filterCategory) filters.push(eq(disposals.categoryKey, filterCategory));
+    if (startFilterDate) filters.push(gte(disposals.createdAt, startFilterDate));
+    if (endFilterDate) filters.push(lte(disposals.createdAt, endFilterDate));
+    if (searchQuery) {
+      const q = `%${searchQuery}%`;
+      filters.push(or(ilike(users.name, q), ilike(users.email, q), ilike(disposals.categoryKey, q))!);
+    }
+    const where = filters.length ? and(...filters) : undefined;
+    const [[totalRow], list] = await Promise.all([
+      db.select({ count: count() }).from(disposals).innerJoin(users, eq(disposals.userId, users.id)).where(where),
+      db
       .select({
         id: disposals.id,
         categoryKey: disposals.categoryKey,
@@ -139,77 +192,51 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
       })
       .from(disposals)
       .innerJoin(users, eq(disposals.userId, users.id))
-      .orderBy(desc(disposals.createdAt));
-
-    // Filter status
-    if (filterStatus) {
-      list = list.filter((d) => d.status === filterStatus);
-    }
-    // Filter kategori
-    if (filterCategory) {
-      list = list.filter((d) => d.categoryKey === filterCategory);
-    }
-    // Filter tanggal
-    if (startFilterDate) {
-      list = list.filter((d) => new Date(d.createdAt) >= startFilterDate);
-    }
-    if (endFilterDate) {
-      list = list.filter((d) => new Date(d.createdAt) <= endFilterDate);
-    }
-    // Filter pencarian
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      list = list.filter(
-        (d) =>
-          d.userName.toLowerCase().includes(q) ||
-          d.userEmail.toLowerCase().includes(q) ||
-          d.categoryKey.toLowerCase().includes(q)
-      );
-    }
-
+      .where(where)
+      .orderBy(desc(disposals.createdAt))
+      .limit(ADMIN_PAGE_SIZE)
+      .offset(offset)
+    ]);
+    paginatedTotal = totalRow.count;
     pendingDisposals = list;
   } else if (currentTab === "redemptions") {
-    let query = db
-      .select({
-        id: redemptions.id,
-        code: redemptions.code,
-        pointsSpent: redemptions.pointsSpent,
-        status: redemptions.status,
-        createdAt: redemptions.createdAt,
-        userName: users.name,
-        userEmail: users.email,
-        rewardId: redemptions.rewardId,
-        rewardTitle: rewards.title,
-        rewardProvider: rewards.provider
-      })
-      .from(redemptions)
-      .innerJoin(users, eq(redemptions.userId, users.id))
-      .innerJoin(rewards, eq(redemptions.rewardId, rewards.id));
-
-    let list = await query.orderBy(desc(redemptions.createdAt));
-
-    // Filter status
-    if (filterStatus) {
-      list = list.filter((r) => r.status === filterStatus);
-    }
-    // Filter tanggal
-    if (startFilterDate) {
-      list = list.filter((r) => new Date(r.createdAt) >= startFilterDate);
-    }
-    if (endFilterDate) {
-      list = list.filter((r) => new Date(r.createdAt) <= endFilterDate);
-    }
-    // Filter pencarian
+    const filters: SQL[] = [];
+    if (filterStatus) filters.push(eq(redemptions.status, filterStatus));
+    if (startFilterDate) filters.push(gte(redemptions.createdAt, startFilterDate));
+    if (endFilterDate) filters.push(lte(redemptions.createdAt, endFilterDate));
     if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      list = list.filter(
-        (r) =>
-          r.code.toLowerCase().includes(q) ||
-          r.userEmail.toLowerCase().includes(q) ||
-          r.userName.toLowerCase().includes(q) ||
-          r.rewardTitle.toLowerCase().includes(q)
-      );
+      const q = `%${searchQuery}%`;
+      filters.push(or(ilike(redemptions.code, q), ilike(users.email, q), ilike(users.name, q), ilike(rewards.title, q))!);
     }
+    const where = filters.length ? and(...filters) : undefined;
+    const [[totalRow], list] = await Promise.all([
+      db.select({ count: count() })
+        .from(redemptions)
+        .innerJoin(users, eq(redemptions.userId, users.id))
+        .innerJoin(rewards, eq(redemptions.rewardId, rewards.id))
+        .where(where),
+      db
+        .select({
+          id: redemptions.id,
+          code: redemptions.code,
+          pointsSpent: redemptions.pointsSpent,
+          status: redemptions.status,
+          createdAt: redemptions.createdAt,
+          userName: users.name,
+          userEmail: users.email,
+          rewardId: redemptions.rewardId,
+          rewardTitle: rewards.title,
+          rewardProvider: rewards.provider
+        })
+        .from(redemptions)
+        .innerJoin(users, eq(redemptions.userId, users.id))
+        .innerJoin(rewards, eq(redemptions.rewardId, rewards.id))
+        .where(where)
+        .orderBy(desc(redemptions.createdAt))
+        .limit(ADMIN_PAGE_SIZE)
+        .offset(offset)
+    ]);
+    paginatedTotal = totalRow.count;
     redemptionList = list;
   } else if (currentTab === "rewards") {
     let list = await db.select().from(rewards).orderBy(rewards.cost);
@@ -235,7 +262,15 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
       editedGuide = guideList.find((g) => g.id === editId) || null;
     }
   } else if (currentTab === "leaderboard") {
-    let list = await db
+    const filters: SQL[] = [ne(users.role, "admin")];
+    if (searchQuery) {
+      const q = `%${searchQuery}%`;
+      filters.push(or(ilike(users.name, q), ilike(users.email, q))!);
+    }
+    const where = and(...filters);
+    const [[totalRow], list] = await Promise.all([
+      db.select({ count: count() }).from(users).where(where),
+      db
       .select({
         id: users.id,
         name: users.name,
@@ -245,32 +280,52 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
         createdAt: users.createdAt
       })
       .from(users)
-      .where(ne(users.role, "admin"))
-      .orderBy(desc(users.points));
-
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      list = list.filter((u) => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
-    }
+      .where(where)
+      .orderBy(desc(users.points))
+      .limit(ADMIN_PAGE_SIZE)
+      .offset(offset)
+    ]);
+    paginatedTotal = totalRow.count;
     leaderboard = list;
   } else if (currentTab === "users") {
-    let list = await db
+    const filters: SQL[] = [ne(users.role, "admin")];
+    if (filterStatus) filters.push(eq(users.isBlocked, filterStatus === "blocked"));
+    if (searchQuery) {
+      const q = `%${searchQuery}%`;
+      filters.push(or(ilike(users.name, q), ilike(users.email, q))!);
+    }
+    const where = and(...filters);
+    const [[totalRow], list] = await Promise.all([
+      db.select({ count: count() }).from(users).where(where),
+      db
       .select()
       .from(users)
-      .where(ne(users.role, "admin"))
-      .orderBy(desc(users.createdAt));
-
-    if (filterStatus) {
-      const blocked = filterStatus === "blocked";
-      list = list.filter((u) => u.isBlocked === blocked);
-    }
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      list = list.filter((u) => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q));
-    }
+      .where(where)
+      .orderBy(desc(users.createdAt))
+      .limit(ADMIN_PAGE_SIZE)
+      .offset(offset)
+    ]);
+    paginatedTotal = totalRow.count;
     userList = list;
   } else if (currentTab === "complaints") {
-    let list = await db
+    const filters: SQL[] = [];
+    if (filterStatus) filters.push(eq(complaints.status, filterStatus));
+    if (startFilterDate) filters.push(gte(complaints.createdAt, startFilterDate));
+    if (endFilterDate) filters.push(lte(complaints.createdAt, endFilterDate));
+    if (searchQuery) {
+      const q = `%${searchQuery}%`;
+      filters.push(or(
+        ilike(complaints.title, q),
+        ilike(complaints.description, q),
+        ilike(complaints.location, q),
+        ilike(users.name, q),
+        ilike(users.email, q)
+      )!);
+    }
+    const where = filters.length ? and(...filters) : undefined;
+    const [[totalRow], list] = await Promise.all([
+      db.select({ count: count() }).from(complaints).innerJoin(users, eq(complaints.userId, users.id)).where(where),
+      db
       .select({
         id: complaints.id,
         title: complaints.title,
@@ -285,31 +340,12 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
       })
       .from(complaints)
       .innerJoin(users, eq(complaints.userId, users.id))
-      .orderBy(desc(complaints.createdAt));
-
-    // Filter status
-    if (filterStatus) {
-      list = list.filter((c) => c.status === filterStatus);
-    }
-    // Filter tanggal
-    if (startFilterDate) {
-      list = list.filter((c) => new Date(c.createdAt) >= startFilterDate);
-    }
-    if (endFilterDate) {
-      list = list.filter((c) => new Date(c.createdAt) <= endFilterDate);
-    }
-    // Filter pencarian
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      list = list.filter(
-        (c) =>
-          c.title.toLowerCase().includes(q) ||
-          c.description.toLowerCase().includes(q) ||
-          c.location.toLowerCase().includes(q) ||
-          c.userName.toLowerCase().includes(q) ||
-          c.userEmail.toLowerCase().includes(q)
-      );
-    }
+      .where(where)
+      .orderBy(desc(complaints.createdAt))
+      .limit(ADMIN_PAGE_SIZE)
+      .offset(offset)
+    ]);
+    paginatedTotal = totalRow.count;
     complaintList = list;
   } else if (currentTab === "reports") {
     const redemptionsCount = sql<number>`count(${redemptions.id})`;
@@ -708,6 +744,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
                 </table>
               </div>
             </div>
+            <AdminPagination params={params} page={page} total={paginatedTotal} />
           </div>
         )}
 
@@ -874,6 +911,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
                 </table>
               </div>
             </div>
+            <AdminPagination params={params} page={page} total={paginatedTotal} />
           </div>
         )}
 
@@ -1000,6 +1038,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
                 </table>
               </div>
             </div>
+            <AdminPagination params={params} page={page} total={paginatedTotal} />
           </div>
         )}
 
@@ -1492,7 +1531,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
                     {leaderboard.map((u: any, idx: number) => (
                       <tr key={u.id} className="hover:bg-slate-50/50">
                         <td className="px-6 py-4 font-display font-black text-slate-400">
-                          #{idx + 1}
+                          #{offset + idx + 1}
                         </td>
                         <td className="px-6 py-4 font-bold text-slate-800">
                           {u.name}
@@ -1537,6 +1576,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
                 </table>
               </div>
             </div>
+            <AdminPagination params={params} page={page} total={paginatedTotal} />
           </div>
         )}
 
@@ -1669,6 +1709,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
                 </table>
               </div>
             </div>
+            <AdminPagination params={params} page={page} total={paginatedTotal} />
           </div>
         )}
 

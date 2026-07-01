@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createDisposalDirect, analyzeTrashImage } from "@/app/actions";
 import { TrashIcon, LeafIcon } from "@/components/icons";
 import { MAX_ITEMS_PER_DISPOSAL } from "@/lib/disposal-rules";
@@ -33,6 +33,27 @@ export default function DisposalClient({ guides }: { guides: GuideData[] }) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
 
+  const stopCamera = useCallback(() => {
+    const stream = videoRef.current?.srcObject;
+    if (stream instanceof MediaStream) {
+      stream.getTracks().forEach((track) => track.stop());
+    }
+    if (videoRef.current) videoRef.current.srcObject = null;
+    setIsCameraActive(false);
+  }, []);
+
+  useEffect(() => {
+    function handleVisibilityChange() {
+      if (document.hidden) stopCamera();
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      stopCamera();
+    };
+  }, [stopCamera]);
+
   function startCamera() {
     setCameraError(null);
     setSubmitError(null);
@@ -40,6 +61,7 @@ export default function DisposalClient({ guides }: { guides: GuideData[] }) {
       setCameraError("Kamera tidak didukung di browser ini.");
       return;
     }
+    stopCamera();
     navigator.mediaDevices
       .getUserMedia({ video: { facingMode: "environment" } })
       .catch(() => navigator.mediaDevices.getUserMedia({ video: true }))
