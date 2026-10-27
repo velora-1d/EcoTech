@@ -326,7 +326,8 @@ Selalu kembalikan respon dalam format JSON objek terstruktur.`
             ]
           }
         ],
-        response_format: { type: "json_object" }
+        response_format: { type: "json_object" },
+        stream: false
       })
     });
 
@@ -335,8 +336,30 @@ Selalu kembalikan respon dalam format JSON objek terstruktur.`
       return { ok: false, error: `API Error: ${response.status} ${response.statusText} (${errText})` };
     }
 
-    const resData = await response.json();
-    const contentText = resData.choices?.[0]?.message?.content;
+    const rawText = await response.text();
+    let contentText = "";
+
+    if (rawText.trim().startsWith("data:")) {
+      const lines = rawText.split("\n");
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith("data:") && !trimmed.includes("[DONE]")) {
+          try {
+            const jsonPart = JSON.parse(trimmed.slice(5).trim());
+            const delta = jsonPart.choices?.[0]?.delta?.content || jsonPart.choices?.[0]?.message?.content || "";
+            contentText += delta;
+          } catch {}
+        }
+      }
+    } else {
+      try {
+        const resData = JSON.parse(rawText);
+        contentText = resData.choices?.[0]?.message?.content || "";
+      } catch (err: any) {
+        return { ok: false, error: `Gagal membaca format respon AI: ${err.message}` };
+      }
+    }
+
     if (!contentText) {
       return { ok: false, error: "AI tidak mengembalikan konten analisis." };
     }
