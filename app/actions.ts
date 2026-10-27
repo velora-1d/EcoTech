@@ -252,7 +252,7 @@ export async function analyzeTrashImage(base64Image: string) {
   const apiBaseRaw = process.env.AI_API_BASE || "https://api.openai.com/v1";
   const apiBase = apiBaseRaw.replace(/^["']|["']$/g, "").trim();
   
-  const modelNameRaw = process.env.AI_MODEL || "gpt-4o-mini";
+  const modelNameRaw = process.env.AI_MODEL || "ag/gemini-3.8-flash";
   const modelName = modelNameRaw.replace(/^["']|["']$/g, "").trim();
 
   if (!apiKey || apiKey === "isi_api_key_anda_di_sini" || apiKey === "") {
@@ -341,7 +341,12 @@ Selalu kembalikan respon dalam format JSON objek terstruktur.`
       return { ok: false, error: "AI tidak mengembalikan konten analisis." };
     }
 
-    const parsed = JSON.parse(contentText);
+    const cleanedText = contentText
+      .replace(/^```json\s*/i, "")
+      .replace(/^```\s*/i, "")
+      .replace(/\s*```$/i, "")
+      .trim();
+    const parsed = JSON.parse(cleanedText);
     return { ok: true, data: parsed };
   } catch (error: any) {
     return { ok: false, error: `Kesalahan saat memproses analisis AI: ${error.message || error}` };
