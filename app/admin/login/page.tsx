@@ -48,16 +48,16 @@ export default async function AdminLoginPage({ searchParams }: Props) {
           <form action={adminLogin} className="mt-6 space-y-4">
             <div>
               <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider" htmlFor="email">
-                Email Administrator
+                Email / Username Administrator
               </label>
               <input
                 id="email"
                 name="email"
-                type="email"
+                type="text"
                 required
-                autoComplete="email"
+                autoComplete="username"
                 className="mt-2 w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-3 text-sm text-slate-200 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500/20 transition placeholder-slate-600"
-                placeholder="admin@ecotech.id"
+                placeholder="admin atau admin@ecotech.id"
               />
             </div>
 

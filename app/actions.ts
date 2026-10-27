@@ -92,7 +92,9 @@ export async function login(formData: FormData) {
   const password = String(formData.get("password") ?? "");
 
   // Jika admin mencoba login di pintu user biasa, tolak & arahkan ke portal admin
-  if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+  const envAdminEmail = (process.env.ADMIN_EMAIL || "admin@ecotech.id").toLowerCase();
+  const envAdminPass = process.env.ADMIN_PASSWORD || "admin123";
+  if ((email === "admin" || email === envAdminEmail || email === "admin@ecotech.id") && password === envAdminPass) {
     redirect("/admin/login?error=Harap+masuk+melalui+portal+khusus+admin.");
   }
 
@@ -128,9 +130,11 @@ export async function adminLogin(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
 
-  // 1. Periksa bypass admin via env
-  if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-    await createSession({ userId: "env-admin", email, name: "Admin", role: "admin" });
+  // 1. Periksa bypass admin via env (mendukung username admin atau admin@ecotech.id)
+  const envAdminEmail = (process.env.ADMIN_EMAIL || "admin@ecotech.id").toLowerCase();
+  const envAdminPass = process.env.ADMIN_PASSWORD || "admin123";
+  if ((email === "admin" || email === envAdminEmail || email === "admin@ecotech.id") && password === envAdminPass) {
+    await createSession({ userId: "env-admin", email: "admin@ecotech.id", name: "Admin", role: "admin" });
     redirect("/admin");
   }
 
