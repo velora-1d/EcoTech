@@ -339,24 +339,24 @@ Selalu kembalikan respon dalam format JSON objek terstruktur.`
     const rawText = await response.text();
     let contentText = "";
 
-    if (rawText.trim().startsWith("data:")) {
-      const lines = rawText.split("\n");
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (trimmed.startsWith("data:") && !trimmed.includes("[DONE]")) {
-          try {
-            const jsonPart = JSON.parse(trimmed.slice(5).trim());
-            const delta = jsonPart.choices?.[0]?.delta?.content || jsonPart.choices?.[0]?.message?.content || "";
-            contentText += delta;
-          } catch {}
-        }
+    // 1. Ekstrak data jika berbentuk SSE stream (mengandung data: {...})
+    const dataMatches = rawText.match(/data:\s*(\{.*\})/g);
+    if (dataMatches && dataMatches.length > 0) {
+      for (const line of dataMatches) {
+        try {
+          const jsonStr = line.replace(/^data:\s*/, "").trim();
+          const obj = JSON.parse(jsonStr);
+          const delta = obj.choices?.[0]?.delta?.content || obj.choices?.[0]?.message?.content || "";
+          contentText += delta;
+        } catch {}
       }
     } else {
       try {
         const resData = JSON.parse(rawText);
         contentText = resData.choices?.[0]?.message?.content || "";
-      } catch (err: any) {
-        return { ok: false, error: `Gagal membaca format respon AI: ${err.message}` };
+      } catch {
+        // Fallback: coba cari objek JSON langsung dari rawText
+        contentText = rawText;
       }
     }
 
@@ -364,13 +364,29 @@ Selalu kembalikan respon dalam format JSON objek terstruktur.`
       return { ok: false, error: "AI tidak mengembalikan konten analisis." };
     }
 
+    // 2. Bersihkan markdown code block jika ada
     const cleanedText = contentText
       .replace(/^```json\s*/i, "")
       .replace(/^```\s*/i, "")
       .replace(/\s*```$/i, "")
       .trim();
-    const parsed = JSON.parse(cleanedText);
-    return { ok: true, data: parsed };
+
+    // 3. Robust JSON parse: ambil substring JSON {...} pertama yang valid
+    try {
+      const parsed = JSON.parse(cleanedText);
+      return { ok: true, data: parsed };
+    } catch {
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          const parsed = JSON.parse(jsonMatch[0]);
+          return { ok: true, data: parsed };
+        } catch (err: any) {
+          return { ok: false, error: `Format JSON AI tidak valid: ${err.message}` };
+        }
+      }
+      return { ok: false, error: `Gagal mengurai respon AI: ${cleanedText.slice(0, 150)}` };
+    }
   } catch (error: any) {
     return { ok: false, error: `Kesalahan saat memproses analisis AI: ${error.message || error}` };
   }
